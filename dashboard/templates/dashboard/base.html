@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Dashboard{% endblock %} - Django Shop</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #f1f3f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow-y: auto;
+            padding-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        
+        .sidebar .logo {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            margin-bottom: 20px;
+        }
+        
+        .sidebar .logo h3 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar-menu li {
+            margin: 0;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 15px 25px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+        
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-left-color: white;
+        }
+        
+        .sidebar-menu .menu-title {
+            padding: 15px 25px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        
+        .sidebar-menu .submenu {
+            list-style: none;
+            padding-left: 0;
+            background-color: rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-menu .submenu a {
+            padding-left: 45px;
+            font-size: 14px;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            padding: 0;
+        }
+        
+        .navbar-custom {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0 30px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .navbar-custom .navbar-brand {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .navbar-custom .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .navbar-custom .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .navbar-custom .user-menu img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        
+        .content {
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .card {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px 8px 0 0 !important;
+            padding: 15px 20px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #5568d3 0%, #6a4190 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .stat-icon {
+            font-size: 40px;
+            color: #667eea;
+            opacity: 0.2;
+        }
+        
+        .alert {
+            border-radius: 5px;
+            border: none;
+        }
+        
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        
+        table {
+            font-size: 14px;
+        }
+        
+        table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            border-top: none;
+        }
+        
+        .badge {
+            padding: 5px 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 250px;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar-toggle {
+                display: block;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h3><i class="fas fa-chart-line"></i> Dashboard</h3>
+        </div>
+        
+        <ul class="sidebar-menu">
+            <li class="menu-title">Menu Principal</li>
+            
+            <li>
+                <a href="{% url 'dashboard:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                    <i class="fas fa-home"></i> Accueil
+                </a>
+            </li>
+            
+            <li class="menu-title">Gestion Ecommerce</li>
+            
+            <li>
+                <a href="{% url 'dashboard:products-list' %}" class="{% if 'products' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-box"></i> Produits
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'dashboard:categories-list' %}" class="{% if 'categories' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-folder"></i> Catégories
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'dashboard:orders-list' %}" class="{% if 'orders' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-bell"></i> Commandes
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'dashboard:promotions-list' %}" class="{% if 'promotions' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-tag"></i> Promotions
+                </a>
+            </li>
+            
+            <li class="menu-title">Contenu & Média</li>
+            
+            <li>
+                <a href="{% url 'dashboard:images-list' %}" class="{% if 'images' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-images"></i> Images
+                </a>
+            </li>
+            
+            <li class="menu-title">Interactions</li>
+            
+            <li>
+                <a href="{% url 'dashboard:contacts-list' %}" class="{% if 'contacts' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-envelope"></i> Messages
+                    {% if unread_messages %}
+                    <span class="badge badge-danger badge-pill float-right">{{ unread_messages }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'dashboard:reviews-list' %}" class="{% if 'reviews' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-star"></i> Avis
+                    {% if unapproved_reviews %}
+                    <span class="badge badge-warning badge-pill float-right">{{ unapproved_reviews }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            
+            <li class="menu-title">Gestion</li>
+            
+            <li>
+                <a href="{% url 'dashboard:users-list' %}" class="{% if 'users' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-users"></i> Utilisateurs
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'dashboard:analytics' %}" class="{% if 'analytics' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-chart-bar"></i> Analytics
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'dashboard:settings' %}" class="{% if 'settings' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-cog"></i> Paramètres
+                </a>
+            </li>
+            
+            <li class="menu-title">Autres</li>
+            
+            <li>
+                <a href="{% url 'core:home' %}">
+                    <i class="fas fa-globe"></i> Visiter Site
+                </a>
+            </li>
+            
+            <li>
+                <a href="{% url 'account_logout' %}">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <div class="navbar-custom">
+            <div class="navbar-brand">
+                {% block navbar_title %}Dashboard {% endblock %}
+            </div>
+            <div class="nav-right">
+                <div class="user-menu">
+                    <span>{{ request.user.get_full_name|default:request.user.username }}</span>
+                    <img src="https://via.placeholder.com/40" alt="{{ request.user.username }}">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Content -->
+        <div class="content">
+            <!-- Messages -->
+            {% if messages %}
+            <div class="container-fluid">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Page Content -->
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

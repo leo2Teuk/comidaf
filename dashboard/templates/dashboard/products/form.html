@@ -1,0 +1,180 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} Produit{% endblock %}
+{% block navbar_title %}{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} Produit{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>{% if form.instance.pk %}Modifier Produit{% else %}Créer Produit{% endif %}</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informations Produit</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="{{ form.title.id_for_label }}" class="font-weight-bold">Nom *</label>
+                                    {{ form.title }}
+                                    {% if form.title.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.title.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.category.id_for_label }}" class="font-weight-bold">Catégorie *</label>
+                                    {{ form.category }}
+                                    {% if form.category.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.category.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.price.id_for_label }}" class="font-weight-bold">Prix *</label>
+                                    {{ form.price }}
+                                    {% if form.price.errors %}
+                                    <div class="alert alert-danger mt-2">{{ form.price.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.discount_price.id_for_label }}" class="font-weight-bold">Prix Réduit</label>
+                                    {{ form.discount_price }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.label.id_for_label }}" class="font-weight-bold">Étiquette</label>
+                                    {{ form.label }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.stock_no.id_for_label }}" class="font-weight-bold">N° Stock *</label>
+                                    {{ form.stock_no }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.stock_quantity.id_for_label }}" class="font-weight-bold">Quantité Stock *</label>
+                                    {{ form.stock_quantity }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description_short.id_for_label }}" class="font-weight-bold">Description Courte</label>
+                            {{ form.description_short }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description_long.id_for_label }}" class="font-weight-bold">Description Complète *</label>
+                            {{ form.description_long }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.weight.id_for_label }}" class="font-weight-bold">Poids (kg)</label>
+                                    {{ form.weight }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.dimensions.id_for_label }}" class="font-weight-bold">Dimensions (L x W x H cm)</label>
+                                    {{ form.dimensions }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.sku.id_for_label }}" class="font-weight-bold">SKU</label>
+                            {{ form.sku }}
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}" class="font-weight-bold">Image Principale</label>
+                            {% if form.instance.image %}
+                            <div class="mb-2">
+                                <img src="{{ form.instance.image.url }}" alt="Image" style="max-width: 200px; height: auto;">
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                        </div>
+                        
+                        <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {% if form.instance.is_active %}checked{% endif %}>
+                            <label class="custom-control-label" for="is_active">
+                                Produit Actif
+                            </label>
+                        </div>
+                        
+                        <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="is_featured" name="is_featured" {% if form.instance.is_featured %}checked{% endif %}>
+                            <label class="custom-control-label" for="is_featured">
+                                Produit Vedette
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                            <a href="{% url 'dashboard:products-list' %}" class="btn btn-secondary">
+                                Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">SEO</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="{{ form.seo_title.id_for_label }}" class="font-weight-bold">Titre SEO</label>
+                        {{ form.seo_title }}
+                        <small class="form-text text-muted">Max 60 caractères</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.seo_description.id_for_label }}" class="font-weight-bold">Description SEO</label>
+                        {{ form.seo_description }}
+                        <small class="form-text text-muted">Max 160 caractères</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Répondre à l'Avis{% endblock %}
+{% block navbar_title %}Répondre à l'Avis{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>Répondre à l'Avis</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Original Review -->
+            <div class="card mb-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Avis Original</h5>
+                </div>
+                <div class="card-body">
+                    <h6>{{ review.title }}</h6>
+                    <p>
+                        <strong>Produit:</strong> {{ review.item.title }}<br>
+                        <strong>Client:</strong> {{ review.user.username }}<br>
+                        <strong>Note:</strong>
+                        {% for i in "12345" %}
+                            {% if forloop.counter <= review.rating %}
+                            <i class="fas fa-star text-warning"></i>
+                            {% else %}
+                            <i class="fas fa-star text-muted"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
+                    <hr>
+                    <p>{{ review.comment }}</p>
+                </div>
+            </div>
+            
+            <!-- Response Form -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Votre Réponse</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.admin_response.id_for_label }}" class="font-weight-bold">Réponse Admin</label>
+                            {{ form.admin_response }}
+                        </div>
+                        
+                        <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="is_approved" name="is_approved" {% if form.instance.is_approved %}checked{% endif %}>
+                            <label class="custom-control-label" for="is_approved">
+                                Approuver cet Avis
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                        <a href="{% url 'dashboard:reviews-list' %}" class="btn btn-secondary">
+                            Annuler
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

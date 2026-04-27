@@ -1,0 +1,118 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} Promotion{% endblock %}
+{% block navbar_title %}{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} Promotion{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>{% if form.instance.pk %}Modifier Promotion{% else %}Créer Promotion{% endif %}</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.code.id_for_label }}" class="font-weight-bold">Code *</label>
+                                    {{ form.code }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.title.id_for_label }}" class="font-weight-bold">Titre *</label>
+                                    {{ form.title }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="font-weight-bold">Description</label>
+                            {{ form.description }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.discount_type.id_for_label }}" class="font-weight-bold">Type Réduction *</label>
+                                    {{ form.discount_type }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.discount_value.id_for_label }}" class="font-weight-bold">Valeur *</label>
+                                    {{ form.discount_value }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.max_uses.id_for_label }}" class="font-weight-bold">Nombre Max Utilisations</label>
+                                    {{ form.max_uses }}
+                                    <small class="form-text text-muted">Laissez vide pour illimité</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.min_order_amount.id_for_label }}" class="font-weight-bold">Montant Min Commande</label>
+                                    {{ form.min_order_amount }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.start_date.id_for_label }}" class="font-weight-bold">Date Début *</label>
+                                    {{ form.start_date }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.end_date.id_for_label }}" class="font-weight-bold">Date Fin *</label>
+                                    {{ form.end_date }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.items.id_for_label }}" class="font-weight-bold">Produits Concernés</label>
+                            {{ form.items }}
+                            <small class="form-text text-muted">Laissez vide pour tous les produits</small>
+                        </div>
+                        
+                        <div class="custom-control custom-checkbox mb-3">
+                            <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {% if form.instance.is_active %}checked{% endif %}>
+                            <label class="custom-control-label" for="is_active">
+                                Promotion Active
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                            <a href="{% url 'dashboard:promotions-list' %}" class="btn btn-secondary">
+                                Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

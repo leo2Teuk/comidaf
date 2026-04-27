@@ -1,0 +1,154 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Détails Utilisateur{% endblock %}
+{% block navbar_title %}Détails Utilisateur{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>{{ object.get_full_name|default:object.username }}</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informations Utilisateur</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>
+                                <strong>Nom d'utilisateur:</strong><br>
+                                {{ object.username }}
+                            </p>
+                            <p>
+                                <strong>Email:</strong><br>
+                                {{ object.email }}
+                            </p>
+                            <p>
+                                <strong>Nom:</strong><br>
+                                {{ object.get_full_name|default:"Non fourni" }}
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p>
+                                <strong>Inscrit le:</strong><br>
+                                {{ object.date_joined|date:"d/m/Y H:i" }}
+                            </p>
+                            <p>
+                                <strong>Dernière connexion:</strong><br>
+                                {{ object.last_login|date:"d/m/Y H:i"|default:"Jamais" }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Orders -->
+            {% if object.order_set.all %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Commandes ({{ object.order_set.count }})</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>N° Commande</th>
+                                    <th>Total</th>
+                                    <th>Statut</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in object.order_set.all|slice:":5" %}
+                                <tr>
+                                    <td><strong>{{ order.ref_code }}</strong></td>
+                                    <td>${{ order.get_total|floatformat:2 }}</td>
+                                    <td>
+                                        {% if order.received %}
+                                        <span class="badge badge-success">Reçue</span>
+                                        {% elif order.being_delivered %}
+                                        <span class="badge badge-info">Livraison</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">Attente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ order.ordered_date|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Status Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Statut</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Compte:</strong><br>
+                        {% if object.is_active %}
+                        <span class="badge badge-success">Actif</span>
+                        {% else %}
+                        <span class="badge badge-danger">Désactivé</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong>Rôle:</strong><br>
+                        {% if object.is_staff %}
+                        <span class="badge badge-primary">Administrateur</span>
+                        {% else %}
+                        <span class="badge badge-secondary">Client</span>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="btn-group d-flex" role="group">
+                        <a href="{% url 'dashboard:users-toggle-staff' object.pk %}" class="btn btn-sm btn-warning flex-fill">
+                            <i class="fas fa-shield-alt"></i>
+                            {% if object.is_staff %}Retirer Admin{% else %}Promouvoir Admin{% endif %}
+                        </a>
+                    </div>
+                    
+                    <div class="btn-group d-flex mt-2" role="group">
+                        <a href="{% url 'dashboard:users-toggle-active' object.pk %}" class="btn btn-sm {% if object.is_active %}btn-danger{% else %}btn-success{% endif %} flex-fill">
+                            <i class="fas fa-power-off"></i>
+                            {% if object.is_active %}Désactiver{% else %}Activer{% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistics Card -->
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Statistiques</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Total Commandes:</strong><br>
+                        {{ object.order_set.count }}
+                    </p>
+                    <p>
+                        <strong>Montant Dépensé:</strong><br>
+                        ${{ total_spent|default:"0.00" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

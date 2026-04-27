@@ -1,0 +1,151 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Détails Commande{% endblock %}
+{% block navbar_title %}Détails Commande {{ object.ref_code }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <h2>Commande #{{ object.ref_code }}</h2>
+                <a href="{% url 'dashboard:orders-list' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Order Items -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Articles de la Commande</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Produit</th>
+                                    <th>Quantité</th>
+                                    <th>Prix Unitaire</th>
+                                    <th>Sous-total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in object.items.all %}
+                                <tr>
+                                    <td>{{ item.item.title }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>${{ item.item.price|floatformat:2 }}</td>
+                                    <td>${{ item.get_final_price|floatformat:2 }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Billing Address -->
+            {% if object.billing_address %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Adresse de Facturation</h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        {{ object.billing_address.street_address }}<br>
+                        {{ object.billing_address.apartment_address }}<br>
+                        {{ object.billing_address.country }} {{ object.billing_address.zip }}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Order Status -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Statut de la Commande</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'dashboard:orders-update' object.pk %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="being_delivered" name="being_delivered" {% if object.being_delivered %}checked{% endif %}>
+                                <label class="custom-control-label" for="being_delivered">
+                                    En Livraison
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="received" name="received" {% if object.received %}checked{% endif %}>
+                                <label class="custom-control-label" for="received">
+                                    Reçue
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-check"></i> Mettre à jour
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Order Summary -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Résumé</h5>
+                </div>
+                <div class="card-body">
+                    <p className="mb-2">
+                        <strong>Client:</strong><br>
+                        {{ object.user.get_full_name|default:object.user.username }}<br>
+                        {{ object.user.email }}
+                    </p>
+                    
+                    <hr>
+                    
+                    <p className="mb-2">
+                        <strong>Sous-total:</strong><br>
+                        {% set subtotal = 0 %}
+                        {% for item in object.items.all %}
+                            {% set subtotal = subtotal|add:item.get_final_price %}
+                        {% endfor %}
+                        ${{ subtotal|floatformat:2 }}
+                    </p>
+                    
+                    {% if object.coupon %}
+                    <p className="mb-2">
+                        <strong>Réduction:</strong><br>
+                        -${{ object.coupon.amount|floatformat:2 }}
+                    </p>
+                    {% endif %}
+                    
+                    <hr>
+                    
+                    <h5>
+                        <strong>Total: </strong>${{ object.get_total|floatformat:2 }}
+                    </h5>
+                    
+                    <hr>
+                    
+                    <p className="text-muted mb-2">
+                        <strong>Date:</strong><br>
+                        {{ object.ordered_date|date:"d/m/Y H:i" }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

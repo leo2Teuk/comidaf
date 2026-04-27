@@ -1,0 +1,20 @@
+﻿Au caractère Ligne:1 : 1
++ @
++ ~
+Jeton non reconnu dans le texte source.
+Au caractère Ligne:10 : 38
++ **Base de Donnees:** Initialisee (11 migrations)
++                                      ~~~~~~~~~~
+Jeton inattendu « migrations » dans l'expression ou l'instruction.
+Au caractère Ligne:10 : 37
++ **Base de Donnees:** Initialisee (11 migrations)
++                                     ~
+Parenthèse fermante « ) » manquante dans l'expression.
+Au caractère Ligne:10 : 48
++ **Base de Donnees:** Initialisee (11 migrations)
++                                                ~
+Jeton inattendu « ) » dans l'expression ou l'instruction.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordEx 
+   ception
+    + FullyQualifiedErrorId : UnrecognizedToken
+ 

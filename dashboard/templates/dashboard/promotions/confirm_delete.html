@@ -1,0 +1,45 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Supprimer Promotion{% endblock %}
+{% block navbar_title %}Supprimer Promotion{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Confirmer la Suppression
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Êtes-vous sûr de vouloir supprimer cette promotion ?
+                    </p>
+                    
+                    <div class="alert alert-info">
+                        <strong>{{ object.code }}</strong><br>
+                        {{ object.title }}<br>
+                        Utilisée {{ object.used_count }} fois
+                    </div>
+                    
+                    <p class="text-danger">
+                        <i class="fas fa-warning"></i> Cette action est irréversible.
+                    </p>
+                    
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                        <a href="{% url 'dashboard:promotions-list' %}" class="btn btn-secondary">
+                            Annuler
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

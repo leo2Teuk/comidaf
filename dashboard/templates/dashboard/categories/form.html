@@ -1,0 +1,83 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} Catégorie{% endblock %}
+{% block navbar_title %}{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} Catégorie{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <h2>{% if form.instance.pk %}Modifier Catégorie{% else %}Créer Catégorie{% endif %}</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.title.id_for_label }}" class="font-weight-bold">Nom *</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                            <div class="alert alert-danger mt-2">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.parent.id_for_label }}" class="font-weight-bold">Catégorie Parent (optionnel)</label>
+                            {{ form.parent }}
+                            <small class="form-text text-muted">Laissez vide pour une catégorie principale</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.description.id_for_label }}" class="font-weight-bold">Description</label>
+                            {{ form.description }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}" class="font-weight-bold">Image</label>
+                            {% if form.instance.image %}
+                            <div class="mb-2">
+                                <img src="{{ form.instance.image.url }}" alt="Image" style="max-width: 200px; height: auto;">
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.order.id_for_label }}" class="font-weight-bold">Ordre</label>
+                                    {{ form.order }}
+                                    <small class="form-text text-muted">Pour trier les catégories</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" {% if form.instance.is_active %}checked{% endif %}>
+                                    <label class="custom-control-label" for="is_active">
+                                        Catégorie Actif
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer
+                            </button>
+                            <a href="{% url 'dashboard:categories-list' %}" class="btn btn-secondary">
+                                Annuler
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
