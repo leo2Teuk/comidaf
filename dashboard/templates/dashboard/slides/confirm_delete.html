@@ -1,0 +1,26 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Supprimer Slide{% endblock %}
+{% block navbar_title %}Supprimer une slide{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle"></i> Confirmation</h5>
+                </div>
+                <div class="card-body">
+                    <p>Voulez-vous vraiment supprimer la slide <strong>{{ object.caption1 }}</strong> ?</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+                        <a href="{% url 'dashboard:slides-list' %}" class="btn btn-outline-secondary">Annuler</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

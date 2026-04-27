@@ -1,71 +1,210 @@
 {% extends "dashboard/base.html" %}
 
 {% block title %}Analytics{% endblock %}
-{% block navbar_title %}Analytics{% endblock %}
+{% block navbar_title %}Analytics & Statistiques{% endblock %}
 
 {% block content %}
 <div class="container-fluid">
+
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <h2><i class="fas fa-chart-line"></i> Tableau de bord Analytics</h2>
+            <span class="text-muted small">Données en temps réel</span>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         SECTION 1 — KPIs principaux
+    ═══════════════════════════════════════════════ -->
     <div class="row mb-4">
-        <div class="col-md-12">
-            <h2><i class="fas fa-chart-bar"></i> Analytics & Rapports</h2>
-        </div>
-    </div>
-    
-    <!-- Charts Row -->
-    <div class="row">
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Commandes par Jour (30 jours)</h5>
-                </div>
+        <!-- Visites aujourd'hui -->
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card border-left-primary h-100 py-2">
                 <div class="card-body">
-                    <canvas id="ordersChart"></canvas>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Visites aujourd'hui</div>
+                    <div class="h4 mb-0 font-weight-bold">{{ total_visits_today }}</div>
+                    <small class="text-muted">7 jours : {{ total_visits_7d }}</small>
                 </div>
             </div>
         </div>
-        
-        <div class="col-lg-6">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Revenu par Jour (30 jours)</h5>
-                </div>
+        <!-- Visites 30 jours -->
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card border-left-info h-100 py-2">
                 <div class="card-body">
-                    <canvas id="revenueChart"></canvas>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Visites (30 jours)</div>
+                    <div class="h4 mb-0 font-weight-bold">{{ total_visits_30d }}</div>
+                    <small class="text-muted">pages publiques</small>
+                </div>
+            </div>
+        </div>
+        <!-- Commandes aujourd'hui -->
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card border-left-success h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Commandes aujourd'hui</div>
+                    <div class="h4 mb-0 font-weight-bold">{{ orders_today }}</div>
+                    <small class="text-muted">Ce mois : {{ orders_this_month }}</small>
+                </div>
+            </div>
+        </div>
+        <!-- Revenu aujourd'hui -->
+        <div class="col-6 col-md-3 mb-3">
+            <div class="card border-left-warning h-100 py-2">
+                <div class="card-body">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Revenu aujourd'hui</div>
+                    <div class="h4 mb-0 font-weight-bold">FCFA {{ revenue_today|floatformat:0 }}</div>
+                    <small class="text-muted">Ce mois : FCFA {{ revenue_this_month|floatformat:0 }}</small>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Popular Products -->
-    <div class="row mt-4">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">Produits Populaires</h5>
+
+    <!-- Ligne 2 KPIs -->
+    <div class="row mb-4">
+        <div class="col-6 col-md-2 mb-2">
+            <div class="card text-center py-3">
+                <div class="card-body p-2">
+                    <i class="fas fa-shopping-cart fa-2x text-success mb-2"></i>
+                    <div class="h5 mb-0">{{ total_orders }}</div>
+                    <small class="text-muted">Commandes total</small>
                 </div>
-                <div class="card-body">
+            </div>
+        </div>
+        <div class="col-6 col-md-2 mb-2">
+            <div class="card text-center py-3">
+                <div class="card-body p-2">
+                    <i class="fas fa-clock fa-2x text-warning mb-2"></i>
+                    <div class="h5 mb-0">{{ pending_orders }}</div>
+                    <small class="text-muted">En attente</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2 mb-2">
+            <div class="card text-center py-3">
+                <div class="card-body p-2">
+                    <i class="fas fa-truck fa-2x text-info mb-2"></i>
+                    <div class="h5 mb-0">{{ delivering_orders }}</div>
+                    <small class="text-muted">En livraison</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2 mb-2">
+            <div class="card text-center py-3">
+                <div class="card-body p-2">
+                    <i class="fas fa-check-circle fa-2x text-success mb-2"></i>
+                    <div class="h5 mb-0">{{ completed_orders }}</div>
+                    <small class="text-muted">Reçues</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2 mb-2">
+            <div class="card text-center py-3">
+                <div class="card-body p-2">
+                    <i class="fas fa-box fa-2x text-primary mb-2"></i>
+                    <div class="h5 mb-0">{{ active_products }}/{{ total_products }}</div>
+                    <small class="text-muted">Produits actifs</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-2 mb-2">
+            <div class="card text-center py-3">
+                <div class="card-body p-2">
+                    <i class="fas fa-users fa-2x text-secondary mb-2"></i>
+                    <div class="h5 mb-0">{{ total_users }}</div>
+                    <small class="text-muted">Utilisateurs (+{{ new_users_this_month }} ce mois)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         SECTION 2 — Graphiques sur 30 jours
+    ═══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header"><h6 class="mb-0"><i class="fas fa-eye mr-1 text-info"></i> Visites / jour (30 j)</h6></div>
+                <div class="card-body"><canvas id="visitsChart" height="180"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header"><h6 class="mb-0"><i class="fas fa-shopping-cart mr-1 text-success"></i> Commandes / jour (30 j)</h6></div>
+                <div class="card-body"><canvas id="ordersChart" height="180"></canvas></div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header"><h6 class="mb-0"><i class="fas fa-dollar-sign mr-1 text-warning"></i> Revenu / jour (30 j)</h6></div>
+                <div class="card-body"><canvas id="revenueChart" height="180"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         SECTION 3 — Produits : les plus vus / commandés
+    ═══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+        <!-- Produits les plus visités -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="fas fa-eye mr-1"></i> Produits les plus visités (total)</h6>
+                </div>
+                <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-sm">
+                        <table class="table table-sm table-hover mb-0">
                             <thead class="thead-light">
-                                <tr>
-                                    <th>Produit</th>
-                                    <th>Catégorie</th>
-                                    <th>Nombre de Ventes</th>
-                                </tr>
+                                <tr><th>#</th><th>Produit</th><th>Catégorie</th><th class="text-right">Vues</th></tr>
                             </thead>
                             <tbody>
-                                {% for product in popular_products %}
+                                {% for item in top_viewed %}
                                 <tr>
-                                    <td>{{ product.title }}</td>
-                                    <td>{{ product.category.title }}</td>
+                                    <td class="text-muted">{{ forloop.counter }}</td>
                                     <td>
-                                        <span class="badge badge-primary">{{ product.order_count }}</span>
+                                        <a href="{% url 'core:product' item.slug %}" target="_blank" class="text-dark">
+                                            {{ item.title }}
+                                        </a>
+                                    </td>
+                                    <td><small class="text-muted">{{ item.category.title }}</small></td>
+                                    <td class="text-right">
+                                        <span class="badge badge-info">{{ item.view_count }}</span>
                                     </td>
                                 </tr>
                                 {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted p-3">Aucune donnée (visitez des produits pour générer des stats)</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produits les plus commandés (30 jours) -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="fas fa-fire mr-1"></i> Produits les plus commandés (30 jours)</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr><th>#</th><th>Produit</th><th>Catégorie</th><th class="text-right">Cdes</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for item in top_ordered %}
                                 <tr>
-                                    <td colspan="3" class="text-center text-muted">Aucune donnée</td>
+                                    <td class="text-muted">{{ forloop.counter }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td><small class="text-muted">{{ item.category.title }}</small></td>
+                                    <td class="text-right">
+                                        <span class="badge badge-success">{{ item.order_count }}</span>
+                                    </td>
                                 </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted p-3">Aucune commande ce mois</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -74,65 +213,231 @@
             </div>
         </div>
     </div>
+
+    <!-- Produits les plus commandés tous temps + Catégories -->
+    <div class="row mb-4">
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0"><i class="fas fa-trophy mr-1"></i> Produits les plus commandés (tous temps)</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr><th>#</th><th>Produit</th><th>Stock</th><th class="text-right">Cdes</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for item in top_ordered_alltime %}
+                                <tr>
+                                    <td>
+                                        {% if forloop.counter == 1 %}<i class="fas fa-medal text-warning"></i>
+                                        {% elif forloop.counter == 2 %}<i class="fas fa-medal text-secondary"></i>
+                                        {% elif forloop.counter == 3 %}<i class="fas fa-medal" style="color:#cd7f32"></i>
+                                        {% else %}<span class="text-muted">{{ forloop.counter }}</span>{% endif %}
+                                    </td>
+                                    <td>{{ item.title }}</td>
+                                    <td>
+                                        {% if item.stock_quantity <= 5 %}
+                                        <span class="badge badge-danger">{{ item.stock_quantity }}</span>
+                                        {% else %}
+                                        <span class="badge badge-light">{{ item.stock_quantity }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-right">
+                                        <span class="badge badge-primary">{{ item.order_count }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted p-3">Aucune commande</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Catégories les plus commandées -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0"><i class="fas fa-tags mr-1"></i> Catégories les plus commandées</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr><th>Catégorie</th><th class="text-right">Commandes</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for cat in top_categories %}
+                                <tr>
+                                    <td>{{ cat.title }}</td>
+                                    <td class="text-right">
+                                        <span class="badge badge-dark">{{ cat.order_count }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="2" class="text-center text-muted p-3">Aucune donnée</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         SECTION 4 — Pages les plus visitées + Stock critique
+    ═══════════════════════════════════════════════ -->
+    <div class="row mb-4">
+        <!-- Pages les plus visitées -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-globe mr-1 text-info"></i> Pages les plus visitées (30 jours)</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr><th>Page</th><th class="text-right">Visites</th></tr>
+                            </thead>
+                            <tbody>
+                                {% for page in top_pages %}
+                                <tr>
+                                    <td class="text-truncate" style="max-width:220px;">
+                                        <code class="small">{{ page.path }}</code>
+                                    </td>
+                                    <td class="text-right">
+                                        <span class="badge badge-info">{{ page.total }}</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="2" class="text-center text-muted p-3">Aucune visite enregistrée</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Produits en stock critique -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0"><i class="fas fa-exclamation-triangle mr-1"></i> Stock critique (≤ 5 unités)</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="thead-light">
+                                <tr><th>Produit</th><th>Réf.</th><th class="text-right">Stock</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                {% for item in low_stock %}
+                                <tr>
+                                    <td>{{ item.title }}</td>
+                                    <td><small class="text-muted">{{ item.stock_no }}</small></td>
+                                    <td class="text-right">
+                                        {% if item.stock_quantity == 0 %}
+                                        <span class="badge badge-danger">Épuisé</span>
+                                        {% else %}
+                                        <span class="badge badge-warning">{{ item.stock_quantity }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'dashboard:products-edit' item.pk %}" class="btn btn-xs btn-outline-secondary btn-sm py-0 px-1">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr><td colspan="4" class="text-center text-muted p-3">
+                                    <i class="fas fa-check-circle text-success mr-1"></i>Aucun produit en stock critique
+                                </td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
-    // Orders Chart
-    const ordersCtx = document.getElementById('ordersChart').getContext('2d');
-    const ordersChart = new Chart(ordersCtx, {
-        type: 'line',
-        data: {
-            labels: {{ daily_orders.keys|safe }},
-            datasets: [{
-                label: 'Commandes',
-                data: {{ daily_orders.values|safe }},
-                borderColor: '#667eea',
-                backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                tension: 0.1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-    
-    // Revenue Chart
-    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-    const revenueChart = new Chart(revenueCtx, {
-        type: 'bar',
-        data: {
-            labels: {{ daily_revenue.keys|safe }},
-            datasets: [{
-                label: 'Revenu ($)',
-                data: {{ daily_revenue.values|safe }},
-                backgroundColor: '#764ba2',
-                borderColor: '#667eea',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+const labels = {{ chart_labels|safe }};
+const shortLabels = labels.map(d => d.slice(5)); // MM-DD
+
+// ─── Visites ───────────────────────────
+new Chart(document.getElementById('visitsChart'), {
+    type: 'line',
+    data: {
+        labels: shortLabels,
+        datasets: [{
+            label: 'Visites',
+            data: {{ chart_visits|safe }},
+            borderColor: '#17a2b8',
+            backgroundColor: 'rgba(23,162,184,0.12)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 2,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+
+// ─── Commandes ─────────────────────────
+new Chart(document.getElementById('ordersChart'), {
+    type: 'bar',
+    data: {
+        labels: shortLabels,
+        datasets: [{
+            label: 'Commandes',
+            data: {{ chart_orders|safe }},
+            backgroundColor: 'rgba(40,167,69,0.7)',
+            borderColor: '#28a745',
+            borderWidth: 1,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+});
+
+// ─── Revenu ────────────────────────────
+new Chart(document.getElementById('revenueChart'), {
+    type: 'line',
+    data: {
+        labels: shortLabels,
+        datasets: [{
+            label: 'Revenu ($)',
+            data: {{ chart_revenue|safe }},
+            borderColor: '#ffc107',
+            backgroundColor: 'rgba(255,193,7,0.12)',
+            tension: 0.3,
+            fill: true,
+            pointRadius: 2,
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
 </script>
 {% endblock %}

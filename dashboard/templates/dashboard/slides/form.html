@@ -1,0 +1,58 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Slide{% endblock %}
+{% block navbar_title %}{{ view.object|yesno:"Modifier la slide,Nouvelle slide" }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-sliders-h"></i> {{ view.object|yesno:"Modifier la slide,Ajouter une slide" }}</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="{{ form.caption1.id_for_label }}" class="font-weight-bold">Titre principal</label>
+                            {{ form.caption1 }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.caption2.id_for_label }}" class="font-weight-bold">Sous-titre</label>
+                            {{ form.caption2 }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.link.id_for_label }}" class="font-weight-bold">Lien cible</label>
+                            {{ form.link }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.image.id_for_label }}" class="font-weight-bold">Image</label>
+                            {% if form.instance.image %}
+                            <div class="mb-2">
+                                <img src="{{ form.instance.image.url }}" alt="Apercu" style="max-width: 100%; max-height: 220px; border-radius: 10px;">
+                            </div>
+                            {% endif %}
+                            {{ form.image }}
+                        </div>
+
+                        <div class="custom-control custom-checkbox mb-4">
+                            {{ form.is_active }}
+                            <label class="custom-control-label" for="{{ form.is_active.id_for_label }}">Slide active</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer
+                        </button>
+                        <a href="{% url 'dashboard:slides-list' %}" class="btn btn-outline-secondary">Annuler</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

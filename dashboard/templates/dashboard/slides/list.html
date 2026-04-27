@@ -1,0 +1,67 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Carousel{% endblock %}
+{% block navbar_title %}Gestion du Carousel{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-sliders-h"></i> Slides du carousel</h2>
+        <a href="{% url 'dashboard:slides-create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Nouvelle slide
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Titre</th>
+                            <th>Sous-titre</th>
+                            <th>Lien</th>
+                            <th>Statut</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slide in slides %}
+                        <tr>
+                            <td>
+                                {% if slide.image %}
+                                <img src="{{ slide.image.url }}" alt="{{ slide.caption1 }}" style="width: 120px; height: 55px; object-fit: cover; border-radius: 8px;">
+                                {% endif %}
+                            </td>
+                            <td>{{ slide.caption1 }}</td>
+                            <td>{{ slide.caption2 }}</td>
+                            <td>{{ slide.link }}</td>
+                            <td>
+                                {% if slide.is_active %}
+                                <span class="badge badge-success">Active</span>
+                                {% else %}
+                                <span class="badge badge-secondary">Inactive</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'dashboard:slides-edit' slide.pk %}" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'dashboard:slides-delete' slide.pk %}" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">Aucune slide disponible.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

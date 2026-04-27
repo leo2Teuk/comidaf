@@ -1,8 +1,9 @@
 from django import forms
 from django.utils.text import slugify
+from django.contrib.auth import get_user_model
 from core.models import (
-    Item, Category, SiteSettings, SiteImage, Contact, 
-    Review, Promotion
+    Item, Category, SiteSettings, SiteImage, Contact,
+    Review, Promotion, Slide, UserProfile
 )
 
 
@@ -139,11 +140,14 @@ class SiteSettingsForm(forms.ModelForm):
     class Meta:
         model = SiteSettings
         fields = [
-            'site_name', 'site_email', 'whatsapp_number', 'phone_number',
+            'site_name', 'site_email', 'notification_email', 'whatsapp_number', 'whatsapp_default_message', 'phone_number',
             'address', 'facebook_url', 'instagram_url', 'twitter_url',
             'youtube_url', 'linkedin_url', 'logo', 'favicon',
             'meta_description', 'meta_keywords', 'currency',
-            'items_per_page', 'enable_reviews', 'enable_wishlist'
+            'items_per_page', 'enable_reviews', 'enable_wishlist',
+            'hero_title', 'hero_subtitle', 'hero_cta_text', 'hero_cta_link',
+            'hero_badge_text', 'hero_secondary_cta_text', 'hero_secondary_cta_link',
+            'primary_color', 'primary_hover_color', 'secondary_color'
         ]
         widgets = {
             'site_name': forms.TextInput(attrs={
@@ -153,9 +157,17 @@ class SiteSettingsForm(forms.ModelForm):
             'site_email': forms.EmailInput(attrs={
                 'class': 'form-control'
             }),
+            'notification_email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'admin@exemple.com'
+            }),
             'whatsapp_number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': '+229...'
+            }),
+            'whatsapp_default_message': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Message WhatsApp par defaut'
             }),
             'phone_number': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -198,6 +210,47 @@ class SiteSettingsForm(forms.ModelForm):
             }),
             'items_per_page': forms.NumberInput(attrs={
                 'class': 'form-control'
+            }),
+            'hero_title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Titre principal de la page d\'accueil'
+            }),
+            'hero_subtitle': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2,
+                'placeholder': 'Sous-titre de presentation'
+            }),
+            'hero_cta_text': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Texte du bouton principal'
+            }),
+            'hero_cta_link': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '/shop/'
+            }),
+            'hero_badge_text': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Texte badge au-dessus du titre'
+            }),
+            'hero_secondary_cta_text': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Texte du second bouton'
+            }),
+            'hero_secondary_cta_link': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '/dashboard/'
+            }),
+            'primary_color': forms.TextInput(attrs={
+                'class': 'form-control',
+                'type': 'color'
+            }),
+            'primary_hover_color': forms.TextInput(attrs={
+                'class': 'form-control',
+                'type': 'color'
+            }),
+            'secondary_color': forms.TextInput(attrs={
+                'class': 'form-control',
+                'type': 'color'
             }),
             'enable_reviews': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
@@ -310,3 +363,54 @@ class PromotionForm(forms.ModelForm):
                 'type': 'datetime-local'
             }),
         }
+
+
+class SlideForm(forms.ModelForm):
+    """Form pour gérer le carousel dynamique"""
+    class Meta:
+        model = Slide
+        fields = ['caption1', 'caption2', 'link', 'image', 'is_active']
+        widgets = {
+            'caption1': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Titre principal'
+            }),
+            'caption2': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Sous-titre'
+            }),
+            'link': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '/shop/'
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*'
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
+        }
+
+
+User = get_user_model()
+
+
+class AdminProfileForm(forms.Form):
+    """Formulaire de modification du profil administrateur"""
+    first_name = forms.CharField(
+        max_length=30, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Prénom'})
+    )
+    last_name = forms.CharField(
+        max_length=150, required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom'})
+    )
+    email = forms.EmailField(
+        required=False,
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email'})
+    )
+    avatar = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'})
+    )

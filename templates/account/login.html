@@ -1,66 +1,83 @@
-{% extends "account/base.html" %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Connexion - {{ site_settings.site_name|default:'Comidaf' }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, rgba(250, 204, 21, 0.12), transparent 35%), #0a0a0a;
+            color: #f4f4f5;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 430px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            border-radius: 14px;
+            padding: 34px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+        }
+        .btn-login {
+            background: #facc15;
+            border: none;
+            color: #000;
+            font-weight: 700;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .btn-login:hover { background: #eab308; color: #000; }
+        .form-control { background: #111; border: 1px solid #3f3f46; color: #fff; }
+        .form-control:focus { border-color: #facc15; box-shadow: none; background: #111; color: #fff; }
+        label { color: #d4d4d8; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="text-center mb-4">
+            <i class="fa-solid fa-bolt fa-2x" style="color:#facc15"></i>
+            <h2 class="mt-2" style="color:#facc15">Connexion</h2>
+        </div>
 
-{% load i18n %}
-{% load account socialaccount %}
-{% load crispy_forms_tags %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-warning">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
+        {% if form.errors %}
+        <div class="alert alert-danger">Identifiants incorrects. Veuillez reessayer.</div>
+        {% endif %}
 
-{% block content %}
+        <form method="post" action="{% url 'account_login' %}">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
 
-<style type="text/css">
-  input {
+            <div class="form-group">
+                <label for="id_username"><i class="fa-solid fa-user"></i> Nom d'utilisateur</label>
+                <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+            </div>
 
-    border: 1px solid #ced4da !important;
+            <div class="form-group">
+                <label for="id_password"><i class="fa-solid fa-lock"></i> Mot de passe</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
 
-}
-</style>
+            <button type="submit" class="btn btn-login mt-3">
+                <i class="fa-solid fa-right-to-bracket"></i> Se connecter
+            </button>
+        </form>
 
-
-<div class="container">
-  <div class="row">
-
-    <div class="col-md-6 mt-5 offset-3">
-      <h1>{% trans "Sign In" %}</h1>
-
-{% get_providers as socialaccount_providers %}
-
-{% if socialaccount_providers %}
-<p>{% blocktrans with site.name as site_name %}Please sign in with one
-of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
-for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
-
-<div class="socialaccount_ballot">
-
-  <ul class="socialaccount_providers">
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
-  </ul>
-
-  <div class="login-or">{% trans 'or' %}</div>
-
-</div>
-
-{% include "socialaccount/snippets/login_extra.html" %}
-
-{% else %}
-<p>{% blocktrans %}If you have not created an account yet, then please
-<a href="{{ signup_url }}" class="text-primary">sign up</a> first.{% endblocktrans %}</p>
-{% endif %}
-
-<form class="login" method="POST" action="{% url 'account_login' %}">
-  {% csrf_token %}
-  {{ form|crispy }}
-  {% if redirect_field_value %}
-
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
-  {% endif %}
-  <a class="btn btn-outline-dark" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
-  <button class="btn btn-primary" type="submit">{% trans "Sign In" %}</button>
-</form>
-
+        <div class="text-center mt-3">
+            <a href="{% url 'core:home' %}" class="text-muted small">Retour a l'accueil</a>
+        </div>
     </div>
-  </div>
-</div>
-
-
-{% endblock %}
+</body>
+</html>

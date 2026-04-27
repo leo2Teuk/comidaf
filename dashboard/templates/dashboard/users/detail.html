@@ -68,7 +68,7 @@
                                 {% for order in object.order_set.all|slice:":5" %}
                                 <tr>
                                     <td><strong>{{ order.ref_code }}</strong></td>
-                                    <td>${{ order.get_total|floatformat:2 }}</td>
+                                    <td>FCFA {{ order.get_total|floatformat:0 }}</td>
                                     <td>
                                         {% if order.received %}
                                         <span class="badge badge-success">Reçue</span>
@@ -144,7 +144,7 @@
                     </p>
                     <p>
                         <strong>Montant Dépensé:</strong><br>
-                        ${{ total_spent|default:"0.00" }}
+                        FCFA {{ total_spent|default:"0" }}
                     </p>
                 </div>
             </div>

@@ -5,6 +5,7 @@ from django.views.generic import (
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.db.models import Q, Count, Sum
 from django.utils import timezone
@@ -13,13 +14,15 @@ from django.http import JsonResponse
 from datetime import timedelta
 
 from core.models import (
-    Item, Category, Order, OrderItem, SiteSettings, SiteImage,
-    Contact, Review, Promotion, User
+    Item, Category, Order, OrderItem, SiteSettings, SiteImage, Slide,
+    Contact, Review, Promotion, PageView, UserProfile
 )
 from .forms import (
     ItemForm, CategoryForm, SiteSettingsForm, SiteImageForm,
-    ReviewResponseForm, PromotionForm
+    ReviewResponseForm, PromotionForm, SlideForm, AdminProfileForm
 )
+
+User = get_user_model()
 
 
 # ==========================================
@@ -37,7 +40,6 @@ class StaffRequiredMixin(UserPassesTestMixin):
         return self.request.user.is_staff
     
     def handle_no_permission(self):
-        messages.error(self.request, "Vous n'avez pas accès au dashboard")
         return redirect('core:home')
 
 
@@ -76,10 +78,7 @@ class DashboardHomeView(LoginRequiredMixin, StaffRequiredMixin, View):
         ]
         
         # Messages non lus
-        unread_messages = Contact.objects.filter(is_read=False).count()
-        
-        # Avis sans approbation
-        unapproved_reviews = Review.objects.filter(is_approved=False).count()
+        # (also provided by context processor for sidebar badges)
         
         context = {
             'total_products': total_products,
@@ -89,8 +88,6 @@ class DashboardHomeView(LoginRequiredMixin, StaffRequiredMixin, View):
             'out_of_stock': out_of_stock,
             'recent_orders': recent_orders,
             'popular_items': popular_items,
-            'unread_messages': unread_messages,
-            'unapproved_reviews': unapproved_reviews,
         }
         
         return render(request, 'dashboard/home.html', context)
@@ -283,6 +280,54 @@ class SiteImageDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, "Image supprimée avec succès")
+        return super().delete(request, *args, **kwargs)
+
+
+# ==========================================
+# GESTION DU CAROUSEL (Slides)
+# ==========================================
+
+class SlideListView(LoginRequiredMixin, StaffRequiredMixin, ListView):
+    """Liste des slides du carousel"""
+    model = Slide
+    template_name = 'dashboard/slides/list.html'
+    context_object_name = 'slides'
+
+    def get_queryset(self):
+        return Slide.objects.all().order_by('-id')
+
+
+class SlideCreateView(LoginRequiredMixin, StaffRequiredMixin, CreateView):
+    """Créer une slide du carousel"""
+    model = Slide
+    form_class = SlideForm
+    template_name = 'dashboard/slides/form.html'
+    success_url = reverse_lazy('dashboard:slides-list')
+
+    def form_valid(self, form):
+        messages.success(self.request, "Slide ajoutée avec succès")
+        return super().form_valid(form)
+
+
+class SlideUpdateView(LoginRequiredMixin, StaffRequiredMixin, UpdateView):
+    """Modifier une slide du carousel"""
+    model = Slide
+    form_class = SlideForm
+    template_name = 'dashboard/slides/form.html'
+
+    def get_success_url(self):
+        messages.success(self.request, "Slide modifiée avec succès")
+        return reverse_lazy('dashboard:slides-list')
+
+
+class SlideDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
+    """Supprimer une slide du carousel"""
+    model = Slide
+    template_name = 'dashboard/slides/confirm_delete.html'
+    success_url = reverse_lazy('dashboard:slides-list')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, "Slide supprimée avec succès")
         return super().delete(request, *args, **kwargs)
 
 
@@ -595,33 +640,184 @@ class PromotionDeleteView(LoginRequiredMixin, StaffRequiredMixin, DeleteView):
 # ==========================================
 
 class AnalyticsView(LoginRequiredMixin, StaffRequiredMixin, View):
-    """Page d'analytics"""
-    
+    """Page d'analytics complète"""
+
     def get(self, request):
-        # Données pour les 30 derniers jours
-        thirty_days_ago = timezone.now() - timedelta(days=30)
-        
-        # Commandes par jour
-        daily_orders = {}
-        for order in Order.objects.filter(ordered=True, ordered_date__gte=thirty_days_ago):
-            date = order.ordered_date.date()
-            daily_orders[date] = daily_orders.get(date, 0) + 1
-        
-        # Revenu par jour
-        daily_revenue = {}
-        for order in Order.objects.filter(ordered=True, ordered_date__gte=thirty_days_ago):
-            date = order.ordered_date.date()
-            daily_revenue[date] = daily_revenue.get(date, 0) + order.get_total()
-        
-        # Produits populaires
-        popular_products = Item.objects.annotate(
-            order_count=Count('orderitem')
-        ).order_by('-order_count')[:10]
-        
+        today = timezone.now().date()
+        thirty_days_ago = today - timedelta(days=29)
+        seven_days_ago = today - timedelta(days=6)
+        this_month_start = today.replace(day=1)
+
+        # ── Commandes ──────────────────────────────────────────────
+        all_orders = Order.objects.filter(ordered=True)
+        total_orders = all_orders.count()
+        orders_this_month = all_orders.filter(ordered_date__date__gte=this_month_start).count()
+        orders_today = all_orders.filter(ordered_date__date=today).count()
+        pending_orders = all_orders.filter(being_delivered=False, received=False).count()
+        delivering_orders = all_orders.filter(being_delivered=True, received=False).count()
+        completed_orders = all_orders.filter(received=True).count()
+
+        # ── Revenus ────────────────────────────────────────────────
+        total_revenue = sum(o.get_total() for o in all_orders)
+        revenue_this_month = sum(
+            o.get_total()
+            for o in all_orders.filter(ordered_date__date__gte=this_month_start)
+        )
+        revenue_today = sum(
+            o.get_total()
+            for o in all_orders.filter(ordered_date__date=today)
+        )
+
+        # ── Produits ───────────────────────────────────────────────
+        total_products = Item.objects.count()
+        active_products = Item.objects.filter(is_active=True).count()
+        low_stock = Item.objects.filter(stock_quantity__lte=5, is_active=True).order_by('stock_quantity')[:10]
+
+        # Produits les plus commandés (30 jours)
+        top_ordered = (
+            Item.objects
+            .annotate(order_count=Count('orderitem', filter=Q(
+                orderitem__order__ordered=True,
+                orderitem__order__ordered_date__date__gte=thirty_days_ago
+            )))
+            .order_by('-order_count')[:10]
+        )
+        # Produits les plus commandés tous temps
+        top_ordered_alltime = (
+            Item.objects
+            .annotate(order_count=Count('orderitem', filter=Q(orderitem__order__ordered=True)))
+            .order_by('-order_count')[:10]
+        )
+        # Produits les plus visités
+        top_viewed = Item.objects.order_by('-view_count')[:10]
+
+        # ── Catégories ─────────────────────────────────────────────
+        top_categories = (
+            Category.objects
+            .annotate(order_count=Count(
+                'item__orderitem',
+                filter=Q(item__orderitem__order__ordered=True)
+            ))
+            .order_by('-order_count')[:8]
+        )
+
+        # ── Utilisateurs ───────────────────────────────────────────
+        total_users = User.objects.count()
+        new_users_this_month = User.objects.filter(date_joined__date__gte=this_month_start).count()
+
+        # ── Visites journalières (30 jours) ────────────────────────
+        # On regroupe toutes les pages par jour
+        from django.db.models import Sum as DSum
+        daily_visits_qs = (
+            PageView.objects
+            .filter(date__gte=thirty_days_ago)
+            .values('date')
+            .annotate(total=DSum('count'))
+            .order_by('date')
+        )
+        daily_visits_labels = [str(r['date']) for r in daily_visits_qs]
+        daily_visits_data = [r['total'] for r in daily_visits_qs]
+
+        # Pages les plus visitées (30 jours)
+        top_pages = (
+            PageView.objects
+            .filter(date__gte=thirty_days_ago)
+            .values('path')
+            .annotate(total=DSum('count'))
+            .order_by('-total')[:15]
+        )
+        total_visits_30d = sum(daily_visits_data) if daily_visits_data else 0
+        total_visits_today = (
+            PageView.objects
+            .filter(date=today)
+            .aggregate(t=DSum('count'))['t'] or 0
+        )
+        total_visits_7d = (
+            PageView.objects
+            .filter(date__gte=seven_days_ago)
+            .aggregate(t=DSum('count'))['t'] or 0
+        )
+
+        # ── Commandes par jour (30 jours) ──────────────────────────
+        from collections import defaultdict
+        import json
+
+        daily_orders_dict = defaultdict(int)
+        daily_revenue_dict = defaultdict(float)
+        for order in all_orders.filter(ordered_date__date__gte=thirty_days_ago):
+            d = str(order.ordered_date.date())
+            daily_orders_dict[d] += 1
+            daily_revenue_dict[d] += float(order.get_total())
+
+        # Remplir les jours manquants
+        all_dates = [(thirty_days_ago + timedelta(days=i)) for i in range(30)]
+        chart_labels = [str(d) for d in all_dates]
+        chart_orders = [daily_orders_dict.get(str(d), 0) for d in all_dates]
+        chart_revenue = [daily_revenue_dict.get(str(d), 0.0) for d in all_dates]
+        chart_visits = {str(r['date']): r['total'] for r in daily_visits_qs}
+        chart_visits_data = [chart_visits.get(str(d), 0) for d in all_dates]
+
         context = {
-            'daily_orders': daily_orders,
-            'daily_revenue': daily_revenue,
-            'popular_products': popular_products,
+            # commandes
+            'total_orders': total_orders,
+            'orders_this_month': orders_this_month,
+            'orders_today': orders_today,
+            'pending_orders': pending_orders,
+            'delivering_orders': delivering_orders,
+            'completed_orders': completed_orders,
+            # revenus
+            'total_revenue': total_revenue,
+            'revenue_this_month': revenue_this_month,
+            'revenue_today': revenue_today,
+            # produits
+            'total_products': total_products,
+            'active_products': active_products,
+            'low_stock': low_stock,
+            'top_ordered': top_ordered,
+            'top_ordered_alltime': top_ordered_alltime,
+            'top_viewed': top_viewed,
+            # catégories
+            'top_categories': top_categories,
+            # utilisateurs
+            'total_users': total_users,
+            'new_users_this_month': new_users_this_month,
+            # visites
+            'total_visits_30d': total_visits_30d,
+            'total_visits_7d': total_visits_7d,
+            'total_visits_today': total_visits_today,
+            'top_pages': top_pages,
+            # charts JSON
+            'chart_labels': json.dumps(chart_labels),
+            'chart_orders': json.dumps(chart_orders),
+            'chart_revenue': json.dumps(chart_revenue),
+            'chart_visits': json.dumps(chart_visits_data),
         }
-        
+
         return render(request, 'dashboard/analytics.html', context)
+
+
+class AdminProfileView(LoginRequiredMixin, StaffRequiredMixin, View):
+    def get(self, request):
+        profile = UserProfile.get_or_create_for_user(request.user)
+        form = AdminProfileForm(initial={
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+            'email': request.user.email,
+        })
+        return render(request, 'dashboard/profile.html', {'form': form, 'profile': profile})
+
+    def post(self, request):
+        form = AdminProfileForm(request.POST, request.FILES)
+        profile = UserProfile.get_or_create_for_user(request.user)
+        if form.is_valid():
+            request.user.first_name = form.cleaned_data.get('first_name', '')
+            request.user.last_name = form.cleaned_data.get('last_name', '')
+            if form.cleaned_data.get('email'):
+                request.user.email = form.cleaned_data['email']
+            request.user.save()
+            if form.cleaned_data.get('avatar'):
+                profile.avatar = form.cleaned_data['avatar']
+                profile.save()
+            messages.success(request, 'Profil mis à jour avec succès.')
+            return redirect('dashboard:profile')
+        return render(request, 'dashboard/profile.html', {'form': form, 'profile': profile})

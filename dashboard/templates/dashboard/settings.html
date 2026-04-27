@@ -40,8 +40,15 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="{{ form.site_email.id_for_label }}" class="font-weight-bold">Email *</label>
+                                    <label for="{{ form.site_email.id_for_label }}" class="font-weight-bold">Email du site *</label>
                                     {{ form.site_email }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.notification_email.id_for_label }}" class="font-weight-bold">Email de réception des commandes</label>
+                                    {{ form.notification_email }}
+                                    <small class="form-text text-muted">Cet email reçoit les notifications internes lors de chaque nouvelle commande.</small>
                                 </div>
                             </div>
                             
@@ -57,12 +64,93 @@
                             <label for="{{ form.whatsapp_number.id_for_label }}" class="font-weight-bold">Numéro WhatsApp</label>
                             {{ form.whatsapp_number }}
                         </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.whatsapp_default_message.id_for_label }}" class="font-weight-bold">Message WhatsApp par défaut</label>
+                            {{ form.whatsapp_default_message }}
+                        </div>
                         
                         <div class="form-group">
                             <label for="{{ form.address.id_for_label }}" class="font-weight-bold">Adresse</label>
                             {{ form.address }}
                         </div>
                         
+                        <hr class="my-4">
+
+                        <h5>Contenu de la page d'accueil</h5>
+
+                        <div class="form-group">
+                            <label for="{{ form.hero_title.id_for_label }}" class="font-weight-bold">Titre principal</label>
+                            {{ form.hero_title }}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.hero_subtitle.id_for_label }}" class="font-weight-bold">Sous-titre principal</label>
+                            {{ form.hero_subtitle }}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.hero_badge_text.id_for_label }}" class="font-weight-bold">Texte badge hero</label>
+                                    {{ form.hero_badge_text }}
+                                </div>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.hero_cta_text.id_for_label }}" class="font-weight-bold">Texte bouton principal</label>
+                                    {{ form.hero_cta_text }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.hero_cta_link.id_for_label }}" class="font-weight-bold">Lien bouton principal</label>
+                                    {{ form.hero_cta_link }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.hero_secondary_cta_text.id_for_label }}" class="font-weight-bold">Texte bouton secondaire</label>
+                                    {{ form.hero_secondary_cta_text }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="{{ form.hero_secondary_cta_link.id_for_label }}" class="font-weight-bold">Lien bouton secondaire</label>
+                                    {{ form.hero_secondary_cta_link }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4">Couleurs globales du site</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.primary_color.id_for_label }}" class="font-weight-bold">Couleur principale</label>
+                                    {{ form.primary_color }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.primary_hover_color.id_for_label }}" class="font-weight-bold">Couleur principale (hover)</label>
+                                    {{ form.primary_hover_color }}
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="{{ form.secondary_color.id_for_label }}" class="font-weight-bold">Couleur secondaire</label>
+                                    {{ form.secondary_color }}
+                                </div>
+                            </div>
+                        </div>
+
                         <hr class="my-4">
                         
                         <h5>Réseaux Sociaux</h5>

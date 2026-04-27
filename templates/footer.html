@@ -1,108 +1,112 @@
-{% load static %}
-<!-- ------------------------------footer sub end---------------------------------- -->
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css?family=Abel|Lato|Open+Sans&display=swap" rel="stylesheet">
-<style>
-  
-    /* footer */
-#footer-main{
-	background: #000;
-	color: white;
-	font-size: 0.8rem;
-	padding: 2.5rem 0;
-    font-family: 'Lato', sans-serif;
-}
+{% now "Y" as current_year %}
 
-#footer-main a{
-	font-size: 14px;
-	display: block;
-	margin: 0.3rem;
-	color: grey;
-}
-
-#footer-main a:hover{
-	font-weight: bold;
-	color: white;
-}
-
-#footer-main h6 a{
-    color: white;
-
-    
-}
-
-
-
-#footer-main hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    border: 0;
-    border-top: 1px solid white;
-}
-
-#footer-main img{
-	margin-right: 0.6rem;
-}
-</style>
-
-<footer id="footer-main">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-3">
-            <br>
-
-            <h6 class="mt-3"><a href="">FIND A STORE</a></h6>
-            <h6 class="mt-3"><a href="">SIGN UP FOR EMAIL</a></h6>
-            <h6 class="mt-3"><a href="">BECOME A MEMBER</h6>
-            
-            <h6 class="mt-3"><a href="/admin/">ADMIN LOGIN</a></h6>
-           
+<section class="border-t border-zinc-200 bg-zinc-100 text-zinc-800">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:grid-cols-2 lg:grid-cols-4 sm:px-6 lg:px-8">
+        <div class="flex items-start gap-3">
+            <span class="mt-1 flex h-12 w-12 items-center justify-center rounded-full border border-zinc-400 text-lg"><i class="fa-solid fa-truck"></i></span>
+            <div>
+                <h4 class="title-font text-lg font-bold">Livraison rapide</h4>
+                <p class="text-sm text-zinc-600">Livraison sur vos commandes de gaines electriques partout au Benin.</p>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <h6 class="mt-3"><a href="">GET HELP</a></h6>
-            <a href="">Order Status</a>
-            <a href="">Shipping and Delivery</a>
-            <a href="">Returns</a>
-            <a href="">Payment Options</a>
-            <a href="">Contact Us</a>
+        <div class="flex items-start gap-3">
+            <span class="mt-1 flex h-12 w-12 items-center justify-center rounded-full border border-zinc-400 text-lg"><i class="fa-solid fa-rotate-left"></i></span>
+            <div>
+                <h4 class="title-font text-lg font-bold">Remplacement simple</h4>
+                <p class="text-sm text-zinc-600">Procedure rapide en cas de produit defectueux ou non conforme.</p>
+            </div>
         </div>
-        <div class="col-sm-3">
-            <h6 class="mt-3"><a href="">ABOUT DJANGO</a></h6>
-            <a href="">News</a>
-            <a href="">Careers</a>
-            <a href="">Investors</a>
-            <a href="">Sustainability</a>
-            
-            
-
-
-
+        <div class="flex items-start gap-3">
+            <span class="mt-1 flex h-12 w-12 items-center justify-center rounded-full border border-zinc-400 text-lg"><i class="fa-solid fa-money-bill-wave"></i></span>
+            <div>
+                <h4 class="title-font text-lg font-bold">Paiement flexible</h4>
+                <p class="text-sm text-zinc-600">Options de paiement adaptees aux clients particuliers et pro.</p>
+            </div>
         </div>
-        <div class="col-sm-3">
-          <a href="">Voice of Customer</a>
-          <a href="">Contacts by Branch</a>
-          <a href="">Ethics Reporting</a>
-          <a href="">Careers</a>
-
-          <br><br>
-          <a href="">Business Inquiry</a>
-          <br>
-          <a href="" class="ico"><i class="fab fa-apple fa-2x"></i> Apple Store</a>
-          <a href="" class="ico"><i class="fab fa-google-play fa-2x"></i> Google Play</a>
+        <div class="flex items-start gap-3">
+            <span class="mt-1 flex h-12 w-12 items-center justify-center rounded-full border border-zinc-400 text-lg"><i class="fa-solid fa-headset"></i></span>
+            <div>
+                <h4 class="title-font text-lg font-bold">Support 24/7</h4>
+                <p class="text-sm text-zinc-600">Accompagnement technique par chat, WhatsApp et email.</p>
+            </div>
         </div>
-      </div>
-      <hr>
-      <div class="row">
-        <div class="col-sm-6">
-          
-        </div>
-        <div class="col-sm-6">
-          
-        </div>
-        <hr>
-        <a href="https://github.com/zinmyoswe" style="margin-left: 1rem">Privacy Policy | @zinmyoswe 2019-2020</a>
-      </div>
     </div>
-  </footer>
-<!-- ------------------------------footer end---------------------------------- -->
+</section>
 
+{% with footer_bg=footer_images|first %}
+<footer class="relative overflow-hidden border-t-4 border-yellow-400">
+    {% if footer_bg %}
+    <img src="{{ footer_bg.image.url }}" alt="{{ footer_bg.alt_text|default:'Footer image' }}" class="absolute inset-0 h-full w-full object-cover">
+    {% else %}
+        {% with banner_bg=banner_images|first %}
+            {% if banner_bg %}
+    <img src="{{ banner_bg.image.url }}" alt="{{ banner_bg.alt_text|default:'Footer image' }}" class="absolute inset-0 h-full w-full object-cover">
+            {% endif %}
+        {% endwith %}
+    {% endif %}
+    <div class="absolute inset-0 bg-gradient-to-r from-[#020617]/95 via-[#0b1739]/88 to-[#020617]/95"></div>
+
+    <div class="relative mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div class="grid gap-10 lg:grid-cols-4">
+            <div>
+                <div class="mb-4 flex items-center gap-3">
+                    {% if site_settings.logo %}
+                    <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-16 w-16 rounded-full border-2 border-yellow-400 object-cover">
+                    {% else %}
+                    <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-yellow-400 bg-white text-2xl text-black"><i class="fa-solid fa-bolt"></i></div>
+                    {% endif %}
+                    <h3 class="title-font text-3xl font-bold text-white">{{ site_settings.site_name|default:'Comidaf' }}</h3>
+                </div>
+                <p class="max-w-sm text-sm text-zinc-200">Votre boutique premium de materiel electrique: gaines, accessoires de protection, connectique et equipements professionnels.</p>
+                <div class="mt-6 flex items-center gap-3 text-white">
+                    <a href="{{ site_settings.facebook_url|default:'#' }}" target="_blank" rel="noopener" class="h-10 w-10 rounded-full bg-white/15 text-center leading-10 hover:bg-yellow-400 hover:text-black" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="{{ site_settings.instagram_url|default:'#' }}" target="_blank" rel="noopener" class="h-10 w-10 rounded-full bg-white/15 text-center leading-10 hover:bg-yellow-400 hover:text-black" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="{{ site_settings.youtube_url|default:'#' }}" target="_blank" rel="noopener" class="h-10 w-10 rounded-full bg-white/15 text-center leading-10 hover:bg-yellow-400 hover:text-black" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#" class="h-10 w-10 rounded-full bg-white/15 text-center leading-10 hover:bg-yellow-400 hover:text-black" aria-label="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="title-font text-2xl font-bold text-white">Navigation</h4>
+                <ul class="mt-5 space-y-3 text-zinc-200">
+                    <li><a href="{% url 'core:home' %}" class="hover:text-yellow-300">Accueil</a></li>
+                    <li><a href="{% url 'core:shop' %}" class="hover:text-yellow-300">Nos produits</a></li>
+                    <li><a href="{% url 'core:order-summary' %}" class="hover:text-yellow-300">Panier</a></li>
+                    <li><a href="{% url 'account_login' %}" class="hover:text-yellow-300">Mon compte</a></li>
+                    <li><a href="{% url 'dashboard:home' %}" class="hover:text-yellow-300">Dashboard</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="title-font text-2xl font-bold text-white">Rayons</h4>
+                <ul class="mt-5 space-y-3 text-zinc-200">
+                    {% for category in top_categories|slice:':5' %}
+                    <li><a href="{% url 'core:category' category.slug %}" class="hover:text-yellow-300">{{ category.title }}</a></li>
+                    {% empty %}
+                    <li><a href="{% url 'core:shop' %}" class="hover:text-yellow-300">Voir le catalogue</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="title-font text-2xl font-bold text-white">Contact</h4>
+                <ul class="mt-5 space-y-4 text-zinc-200">
+                    <li class="flex items-start gap-3"><i class="fa-regular fa-clock mt-1 text-yellow-400"></i><span>Lun - Sam: 8h30 - 20h00</span></li>
+                    <li class="flex items-start gap-3"><i class="fa-regular fa-envelope mt-1 text-yellow-400"></i><span>{{ site_settings.site_email|default:'contact@comidaf.com' }}</span></li>
+                    {% if site_settings.phone_number %}<li class="flex items-start gap-3"><i class="fa-solid fa-phone mt-1 text-yellow-400"></i><span>{{ site_settings.phone_number }}</span></li>{% endif %}
+                    {% if site_settings.address %}<li class="flex items-start gap-3"><i class="fa-solid fa-location-dot mt-1 text-yellow-400"></i><span>{{ site_settings.address }}</span></li>{% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="mt-10 border-t border-white/20 pt-6 text-center text-sm text-zinc-300">
+            <span class="font-semibold text-white">Selection premium de gaines electriques</span>
+            <span class="mx-2 text-yellow-400">|</span>
+            <span>Installation residentielle et industrielle</span>
+            <span class="mx-2 text-yellow-400">|</span>
+            <span>Support technique pro</span>
+            <div class="mt-3">© {{ current_year }} {{ site_settings.site_name|default:'Comidaf' }} | Tous droits reserves</div>
+        </div>
+    </div>
+</footer>
+{% endwith %}

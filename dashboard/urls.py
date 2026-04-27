@@ -24,6 +24,12 @@ urlpatterns = [
     path('images/create/', views.SiteImageCreateView.as_view(), name='images-create'),
     path('images/<int:pk>/edit/', views.SiteImageUpdateView.as_view(), name='images-edit'),
     path('images/<int:pk>/delete/', views.SiteImageDeleteView.as_view(), name='images-delete'),
+
+    # Carousel Slides Management
+    path('slides/', views.SlideListView.as_view(), name='slides-list'),
+    path('slides/create/', views.SlideCreateView.as_view(), name='slides-create'),
+    path('slides/<int:pk>/edit/', views.SlideUpdateView.as_view(), name='slides-edit'),
+    path('slides/<int:pk>/delete/', views.SlideDeleteView.as_view(), name='slides-delete'),
     
     # Site Settings
     path('settings/', views.SiteSettingsView.as_view(), name='settings'),
@@ -59,4 +65,7 @@ urlpatterns = [
     
     # Analytics
     path('analytics/', views.AnalyticsView.as_view(), name='analytics'),
+
+    # Admin Profile
+    path('profile/', views.AdminProfileView.as_view(), name='profile'),
 ]

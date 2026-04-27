@@ -1,39 +1,42 @@
 from django import forms
-from django_countries.fields import CountryField
-from django_countries.widgets import CountrySelectWidget
-
-PAYMENT_CHOICES = (
-    ('S', 'Stripe'),
-    ('P', 'PayPal')
-)
 
 
 class CheckoutForm(forms.Form):
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+        'placeholder': 'Confirmez votre adresse email',
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400'
+    }))
     street_address = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': '1234 Main St',
-        'class': 'form-control'
+        'placeholder': 'Quartier, rue, repere',
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400'
     }))
     apartment_address = forms.CharField(required=False, widget=forms.TextInput(attrs={
-        'placeholder': 'Apartment or suite',
-        'class': 'form-control'
+        'placeholder': 'Appartement, immeuble, complement',
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400'
     }))
-    country = CountryField(blank_label='(select country)').formfield(widget=CountrySelectWidget(attrs={
-        'class': 'custom-select d-block w-100'
-
+    country = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400',
+        'placeholder': 'Pays'
+    }))
+    city = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400',
+        'placeholder': 'Ville'
     }))
     zip = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control'
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400',
+        'placeholder': 'Code postal'
     }))
-    same_shipping_address = forms.BooleanField(required=False)
-    save_info = forms.BooleanField(required=False)
-    payment_option = forms.ChoiceField(
-        widget=forms.RadioSelect, choices=PAYMENT_CHOICES)
+    notes = forms.CharField(required=False, widget=forms.Textarea(attrs={
+        'class': 'w-full rounded-2xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-yellow-400',
+        'rows': 3,
+        'placeholder': 'Instructions de livraison ou precision complementaire'
+    }))
 
 
 class CouponForm(forms.Form):
     code = forms.CharField(widget=forms.TextInput(attrs={
-        'class': 'form-control',
-        'placeholder': 'Promo code'
+        'class': 'w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-2 text-sm text-zinc-100 outline-none focus:border-yellow-400',
+        'placeholder': 'Code promo'
     }))
 
 

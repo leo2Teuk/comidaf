@@ -1,61 +1,139 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
-  {% include "header.html" %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block head_title %}{{ site_settings.site_name|default:'Comidaf' }}{% endblock %}</title>
+    <meta name="description" content="{{ site_settings.meta_description|default:'Vente de gaines electriques et accessoires professionnels.' }}">
+    <meta name="keywords" content="{{ site_settings.meta_keywords|default:'gaines electriques, cables, installation electrique' }}">
+    {% if site_settings.favicon %}
+    <link rel="icon" type="image/png" href="{{ site_settings.favicon.url }}">
+    {% endif %}
 
-  <title>{% block head_title %}{% endblock %}</title>
-  {% block extra_head %} {% endblock %}
-  <style type="text/css">
-    .form-control {
-    display: block;
-    width: 100%;
-    height: calc(1.5em + .75rem + 2px);
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da !important;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-}
-  </style>
-  <body class="animsition">
-    {% include "nav.html"%}
-    <div class="mt-2">
-      {% if messages %} {% for message in messages %}
-      <div
-        class="alert alert-{{ message.tags }} alert-dismissible fade show"
-        role="alert"
-      >
-        {{ message }}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            black: '#0a0a0a',
+                            yellow: '#facc15',
+                            yellowDeep: '#eab308'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-        <button
-          type="button"
-          class="close"
-          data-dismiss="alert"
-          aria-label="Close"
-        >
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-    </div>
+    <style>
+        :root {
+            --site-primary: {{ site_settings.primary_color|default:'#facc15' }};
+            --site-primary-hover: {{ site_settings.primary_hover_color|default:'#eab308' }};
+            --site-secondary: {{ site_settings.secondary_color|default:'#0a0a0a' }};
+            --site-primary-rgb: 250, 204, 21;
+        }
 
-    {% endfor %} 
-    {% endif %} 
+        body {
+            font-family: 'Barlow', sans-serif;
+            background: radial-gradient(circle at top right, rgba(var(--site-primary-rgb), 0.12), transparent 35%), var(--site-secondary);
+            color: #f4f4f5;
+        }
+        h1, h2, h3, h4, .title-font {
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 0.02em;
+        }
+        .card-animated {
+            transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+        }
+        .card-animated:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+            border-color: rgba(250, 204, 21, 0.7);
+        }
+        .btn-main {
+            transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+        }
+        .btn-main:hover {
+            transform: translateY(-2px);
+        }
 
-    {% block content %} 
-    {% endblock content %}
+        .text-yellow-300,
+        .text-yellow-400 {
+            color: var(--site-primary) !important;
+        }
 
-     {% block extra_body %} 
-     {% endblock %} 
+        .bg-yellow-300,
+        .bg-yellow-400 {
+            background-color: var(--site-primary) !important;
+        }
 
-    {% include "footer.html"%} 
-    {% include "script.html"%}
+        .hover\:bg-yellow-300:hover,
+        .hover\:bg-yellow-400:hover {
+            background-color: var(--site-primary-hover) !important;
+        }
 
-    {% block extra_scripts %}
-    {% endblock extra_scripts %}
-  </body>
+        .border-yellow-300,
+        .border-yellow-400,
+        .border-yellow-400\/20,
+        .border-yellow-400\/25,
+        .border-yellow-400\/30,
+        .border-yellow-400\/40,
+        .border-yellow-400\/50,
+        .hover\:border-yellow-400:hover {
+            border-color: color-mix(in srgb, var(--site-primary) 35%, #64748b 65%) !important;
+        }
+
+        .ring-yellow-300\/40 {
+            --tw-ring-color: rgba(var(--site-primary-rgb), 0.4) !important;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-screen">
+    {% include "nav.html" %}
+
+    <main>
+        {% if messages %}
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+                {% for message in messages %}
+                <div class="mb-3 rounded-xl border border-yellow-400/50 bg-yellow-400/10 px-4 py-3 text-sm text-yellow-100">
+                    {{ message }}
+                </div>
+                {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %}{% endblock content %}
+    </main>
+
+    {% include "footer.html" %}
+
+    {% with wa_number=site_settings.whatsapp_number|default:site_settings.phone_number %}
+    {% if wa_number %}
+    <a
+        href="https://wa.me/{{ wa_number|cut:'+'|cut:' ' }}?text={{ site_settings.whatsapp_default_message|default:'Bonjour, je souhaite obtenir un devis pour des gaines electriques.'|urlencode }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-green-500 text-white shadow-2xl ring-4 ring-green-300/40 transition hover:scale-105"
+        aria-label="Contacter sur WhatsApp"
+    >
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+    </a>
+    {% endif %}
+    {% endwith %}
+
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 700, once: true, offset: 60 });
+    </script>
+    {% block extra_scripts %}{% endblock extra_scripts %}
+</body>
 </html>

@@ -1,75 +1,93 @@
-{% extends 'base.html' %} 
-{% load static %} 
+{% extends 'base.html' %}
+
+{% block head_title %}Panier | {{ site_settings.site_name|default:'Comidaf' }}{% endblock %}
+
 {% block content %}
-
-<div class="container">
-  <div class="row">
-    <div class="col-lg-12">
-      <h2>Order Summary</h2>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Product Name</th>
-            <th scope="col">Price</th>
-            <th scope="col">Qty</th>
-            <th scope="col">Total Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for order_item in object.items.all %}
-          <tr>
-            <th scope="row">{{ forloop.counter }}</th>
-            <td>
-			<img src="{{ order_item.item.image.url }}" style="width: 130px;"> 
-            </td>
-            <td>{{ order_item.item.title }}</td>
-            <td>{{ order_item.item.price }}</td>
-            <td>
-            	<a href="{% url 'core:remove-single-item-from-cart' order_item.item.slug %}"><i class="fas fa-minus mr-3"></i></a>
-            	{{ order_item.quantity }}
-            	<a href="{% url 'core:add-to-cart' order_item.item.slug %}"><i class="fas fa-plus ml-3"></i></a>
-            </td>
-            <td>
-              {% if order_item.item.discount_price %}
-                  ${{ order_item.get_total_discount_item_price}}
-                  <span class="badge badge-primary">  Saving ${{ order_item.get_amount_saved }}</span>
-              {% else %}
-                  ${{ order_item.get_total_item_price}}
-              {% endif %}
-              <a style="color: red" href="{% url 'core:remove-from-cart' order_item.item.slug %}">
-              	<i class="fas fa-trash float-right"></i>
-              </a>
-            </td>
-          </tr>
-          {% empty %}
-          <tr>
-			<td colspan="5">Your cart is empty</td>
-          </tr>
-        </tbody>
-        {% endfor %}
-        {% if object.coupon %}
-        <tr>
-          <td colspan="5"><b>Coupon : </b></td>
-          <td>- ${{ object.coupon.amount }}</td>
-        </tr>
-        {% endif%}
-        {% if object.get_total %}
-        <tr>
-        	<td colspan="5"><b>Order Total : </b></td>
-        	<td><b>${{ object.get_total }}</b></td>
-        </tr>
-        <tr>
-        	<td colspan="5">
-        		<a href="/checkout" class="btn btn-warning float-right ml-2">Checkout</a>
-        		<a href="/" class="btn btn-primary float-right">Continue Shopping</a>
-
-        	</td>
-        </tr>
-        {% endif %}
-      </table>
+<section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-sm uppercase tracking-[0.25em] text-zinc-400">Panier</p>
+            <h1 class="title-font text-4xl font-extrabold text-zinc-100">Finalisez votre commande</h1>
+            <p class="mt-2 text-zinc-300">Verifiez vos produits, ajustez les quantites puis cliquez sur Passer la commande.</p>
+        </div>
+        <a href="{% url 'core:shop' %}" class="btn-main inline-flex rounded-full border border-zinc-700 px-5 py-3 text-sm font-semibold text-zinc-100 hover:border-yellow-400 hover:text-yellow-300">Continuer vos achats</a>
     </div>
-  </div>
-</div>
 
+    {% if object.items.all %}
+    <div class="grid gap-8 lg:grid-cols-[1.6fr_0.8fr]">
+        <div class="space-y-4">
+            {% for order_item in object.items.all %}
+            <article class="card-animated rounded-3xl border border-zinc-800 bg-zinc-900/70 p-4 sm:p-5">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                    <a href="{{ order_item.item.get_absolute_url }}" class="block h-28 w-full overflow-hidden rounded-2xl bg-zinc-800 sm:w-32">
+                        <img src="{{ order_item.item.image.url }}" alt="{{ order_item.item.title }}" class="h-full w-full object-cover">
+                    </a>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-yellow-300">{{ order_item.item.category.title }}</p>
+                                <a href="{{ order_item.item.get_absolute_url }}" class="title-font text-2xl font-bold text-zinc-100 hover:text-yellow-300">{{ order_item.item.title }}</a>
+                                <p class="mt-1 text-sm text-zinc-400">Reference: {{ order_item.item.stock_no }}</p>
+                            </div>
+                            <div class="text-left sm:text-right">
+                                {% if order_item.item.discount_price %}
+                                <p class="text-sm text-zinc-500 line-through">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.price }}</p>
+                                <p class="text-xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.discount_price }}</p>
+                                {% else %}
+                                <p class="text-xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.price }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div class="inline-flex items-center gap-3 rounded-full border border-zinc-700 bg-zinc-950 px-3 py-2 text-zinc-100">
+                                <a href="{% url 'core:remove-single-item-from-cart' order_item.item.slug %}" class="h-8 w-8 rounded-full bg-zinc-800 text-center leading-8 hover:bg-yellow-400 hover:text-black"><i class="fa-solid fa-minus"></i></a>
+                                <span class="min-w-8 text-center text-sm font-semibold">{{ order_item.quantity }}</span>
+                                <a href="{% url 'core:add-to-cart' order_item.item.slug %}" class="h-8 w-8 rounded-full bg-zinc-800 text-center leading-8 hover:bg-yellow-400 hover:text-black"><i class="fa-solid fa-plus"></i></a>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <p class="text-lg font-bold text-zinc-100">Total: {{ site_settings.currency|default:'FCFA' }} {{ order_item.get_final_price }}</p>
+                                <a href="{% url 'core:remove-from-cart' order_item.item.slug %}" class="text-sm font-semibold text-red-400 hover:text-red-300">Retirer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <aside class="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-6 h-fit sticky top-24">
+            <h2 class="title-font text-2xl font-bold text-zinc-100">Resume</h2>
+            <div class="mt-5 space-y-3 text-sm text-zinc-300">
+                <div class="flex items-center justify-between">
+                    <span>Articles</span>
+                    <span>{{ object.items.count }}</span>
+                </div>
+                {% if object.coupon %}
+                <div class="flex items-center justify-between text-green-400">
+                    <span>Coupon ({{ object.coupon.code }})</span>
+                    <span>- {{ site_settings.currency|default:'FCFA' }} {{ object.coupon.amount }}</span>
+                </div>
+                {% endif %}
+                <div class="flex items-center justify-between border-t border-zinc-800 pt-4 text-base font-bold text-zinc-100">
+                    <span>Total</span>
+                    <span>{{ site_settings.currency|default:'FCFA' }} {{ object.get_total }}</span>
+                </div>
+            </div>
+
+            <a href="{% url 'core:checkout' %}" class="btn-main mt-6 inline-flex w-full items-center justify-center rounded-2xl bg-yellow-400 px-5 py-4 text-sm font-bold text-black">
+                Passer la commande
+            </a>
+
+            <p class="mt-4 text-xs text-zinc-400">En cliquant sur ce bouton, vous confirmerez votre email et vos informations de livraison avant notification de l'administrateur.</p>
+        </aside>
+    </div>
+    {% else %}
+    <div class="rounded-3xl border border-zinc-800 bg-zinc-900/70 p-10 text-center">
+        <h2 class="title-font text-3xl font-bold text-zinc-100">Votre panier est vide</h2>
+        <p class="mt-3 text-zinc-300">Ajoutez des produits pour lancer votre demande de livraison.</p>
+        <a href="{% url 'core:shop' %}" class="btn-main mt-6 inline-flex rounded-full bg-yellow-400 px-6 py-3 text-sm font-bold text-black">Explorer le catalogue</a>
+    </div>
+    {% endif %}
+</section>
 {% endblock content %}

@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.db import models
 from django.db.models import Sum
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.shortcuts import reverse
-from django_countries.fields import CountryField
 from django.utils import timezone
 
 # Create your models here.
@@ -90,6 +91,7 @@ class Item(models.Model):
     sku = models.CharField(max_length=50, unique=True, blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
+    view_count = models.PositiveIntegerField(default=0)
     seo_title = models.CharField(max_length=60, blank=True, null=True)
     seo_description = models.CharField(max_length=160, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -190,7 +192,8 @@ class BillingAddress(models.Model):
                              on_delete=models.CASCADE)
     street_address = models.CharField(max_length=100)
     apartment_address = models.CharField(max_length=100)
-    country = CountryField(multiple=False)
+    city = models.CharField(max_length=100, blank=True, default='')
+    country = models.CharField(max_length=100, default='')
     zip = models.CharField(max_length=100)
     address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     default = models.BooleanField(default=False)
@@ -239,9 +242,32 @@ class SiteSettings(models.Model):
     """Configuration globale du site"""
     site_name = models.CharField(max_length=100, default='Django Shop')
     site_email = models.EmailField(default='contact@djangoshop.com')
+    notification_email = models.EmailField(
+        blank=True,
+        help_text="Email de l'administrateur qui reçoit les notifications de commande"
+    )
     whatsapp_number = models.CharField(max_length=20, blank=True)
+    whatsapp_default_message = models.CharField(
+        max_length=255,
+        blank=True,
+        default='Bonjour, je souhaite obtenir un devis pour des gaines electriques.'
+    )
     phone_number = models.CharField(max_length=20, blank=True)
     address = models.TextField(blank=True)
+
+    # Hero / contenu accueil
+    hero_title = models.CharField(max_length=120, default='Solutions de gaines electriques professionnelles')
+    hero_subtitle = models.TextField(blank=True, default='Des references fiables pour vos chantiers residentiels et industriels.')
+    hero_cta_text = models.CharField(max_length=60, default='Decouvrir les produits')
+    hero_cta_link = models.CharField(max_length=255, default='/shop/')
+    hero_badge_text = models.CharField(max_length=80, default='Materiel electrique professionnel')
+    hero_secondary_cta_text = models.CharField(max_length=60, default='Gerer le contenu')
+    hero_secondary_cta_link = models.CharField(max_length=255, default='/dashboard/')
+
+    # Couleurs globales (pilotables depuis dashboard)
+    primary_color = models.CharField(max_length=7, default='#facc15')
+    primary_hover_color = models.CharField(max_length=7, default='#eab308')
+    secondary_color = models.CharField(max_length=7, default='#0a0a0a')
     
     # Social Media
     facebook_url = models.URLField(blank=True)
@@ -259,7 +285,7 @@ class SiteSettings(models.Model):
     meta_keywords = models.CharField(max_length=255, blank=True)
     
     # Settings
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=10, default='FCFA')
     items_per_page = models.IntegerField(default=12)
     enable_reviews = models.BooleanField(default=True)
     enable_wishlist = models.BooleanField(default=True)
@@ -276,7 +302,9 @@ class SiteSettings(models.Model):
 class SiteImage(models.Model):
     """Images statiques du site (bannières, logos, etc.)"""
     IMAGE_TYPES = (
+        ('top_carousel', 'Carousel pleine largeur'),
         ('banner', 'Bannière'),
+        ('footer', 'Footer'),
         ('hero', 'Hero Section'),
         ('logo', 'Logo'),
         ('favicon', 'Favicon'),
@@ -385,3 +413,43 @@ class Promotion(models.Model):
         if now < self.start_date or now > self.end_date:
             return False
         return self.is_active
+
+
+class PageView(models.Model):
+    """Suivi des visites quotidiennes par page"""
+    path = models.CharField(max_length=500)
+    date = models.DateField()
+    count = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('path', 'date')
+        ordering = ['-date', '-count']
+
+    def __str__(self):
+        return f"{self.date} | {self.path} ({self.count})"
+
+    @classmethod
+    def record(cls, path):
+        today = timezone.now().date()
+        obj, created = cls.objects.get_or_create(path=path, date=today)
+        cls.objects.filter(pk=obj.pk).update(count=models.F('count') + 1)
+
+
+class UserProfile(models.Model):
+    """Profil étendu de l'utilisateur (photo de profil, etc.)"""
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+
+    def __str__(self):
+        return f"Profil de {self.user.username}"
+
+    @classmethod
+    def get_or_create_for_user(cls, user):
+        profile, _ = cls.objects.get_or_create(user=user)
+        return profile
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfile.objects.get_or_create(user=instance)

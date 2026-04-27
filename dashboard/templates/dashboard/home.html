@@ -112,7 +112,7 @@
                                 <tr>
                                     <td><strong>{{ order.ref_code }}</strong></td>
                                     <td>{{ order.user.get_full_name|default:order.user.username }}</td>
-                                    <td>${{ order.get_total|floatformat:2 }}</td>
+                                    <td>FCFA {{ order.get_total|floatformat:0 }}</td>
                                     <td>
                                         {% if order.received %}
                                         <span class="badge badge-success">Reçue</span>
