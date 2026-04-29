@@ -147,10 +147,115 @@
         {% endfor %}
     </div>
 </section>
+
+<!-- Localisation Section -->
+<section class="relative overflow-hidden border-t-2 border-b-2 border-yellow-400/30 bg-gradient-to-b from-zinc-900/50 to-zinc-950">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="mb-12 flex flex-col items-center text-center" data-aos="fade-up">
+            <p class="mb-3 inline-flex items-center rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-yellow-300">
+                <i class="fa-solid fa-map-pin mr-2"></i> Localisation
+            </p>
+            <h2 class="title-font mx-auto max-w-2xl text-3xl font-bold text-zinc-100 sm:text-4xl">
+                Retrouvez-nous à {{ site_settings.address|default:'Douala, Cameroun' }}
+            </h2>
+            <p class="mt-4 max-w-xl text-zinc-400">
+                Découvrez l'emplacement de nos installations et visitez-nous pour vos besoins en matériel électrique professionnel. Nous sommes situés à une position stratégique pour servir toute la région.
+            </p>
+        </div>
+
+        <!-- Map Container -->
+        <div class="overflow-hidden rounded-2xl border-2 border-yellow-400/30 shadow-2xl" data-aos="zoom-in">
+            <div id="map-container" class="relative h-[500px] w-full bg-zinc-800">
+                <!-- Fallback content if JavaScript fails -->
+                <div id="map-fallback" style="display:none;" class="flex flex-col items-center justify-center h-full bg-gradient-to-br from-zinc-800 to-zinc-900 text-center p-8">
+                    <div class="mb-6">
+                        <i class="fa-solid fa-map-pin text-6xl text-yellow-300"></i>
+                    </div>
+                    <h3 class="title-font text-2xl font-bold text-zinc-100 mb-4">Carte Interactive</h3>
+                    <p class="text-zinc-400 mb-6 max-w-md">
+                        Découvrez notre localisation exacte avec une vue satellite détaillée
+                    </p>
+                    <div class="bg-zinc-800/50 rounded-lg p-4 mb-6 border border-yellow-400/20">
+                        <p class="text-sm text-zinc-300 mb-2"><strong>Coordonnées GPS :</strong></p>
+                        <p class="text-yellow-300 font-mono">
+                            Latitude: 3.786593°N<br>
+                            Longitude: 11.442157°E
+                        </p>
+                    </div>
+                    <a href="#" onclick="document.getElementById('map').scrollIntoView({behavior: 'smooth'}); return false;"
+                       class="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-300 text-black px-6 py-3 rounded-lg font-semibold transition-colors">
+                        <i class="fa-solid fa-map"></i>
+                        Voir sur la carte
+                    </a>
+                </div>
+                <div class="absolute left-4 top-4 z-20 hidden sm:block">
+                    <div class="rounded-2xl border border-yellow-400/25 bg-black/70 p-4 text-left text-sm text-zinc-100 shadow-xl backdrop-blur-xl">
+                        <p class="mb-2 text-yellow-300 font-semibold">Détails de la carte</p>
+                            <p class="mb-1"><strong>Type :</strong> Satellite + routes et quartiers</p>
+                        <p class="mb-1"><strong>Ville :</strong> Douala</p>
+                        <p class="mb-1"><strong>Quartier :</strong> Bonapriso</p>
+                        <p class="mb-1"><strong>Carrefour :</strong> Carrefour Akwa</p>
+                        <p class="mb-1"><strong>Coordonnées :</strong> 3.786593°N, 11.442157°E</p>
+                        <p class="mb-1"><strong>Zoom initial :</strong> 15</p>
+                        <p class="mb-1"><strong>Contrôles :</strong> Zoom, Échelle, Popup</p>
+                        <p class="mb-0"><strong>Source :</strong> Esri / ArcGIS World Imagery + Références</p>
+                    </div>
+                </div>
+                <div id="map" class="h-full w-full"></div>
+            </div>
+        </div>
+
+        <!-- Map Information -->
+        <div class="mt-12 grid gap-6 sm:grid-cols-3">
+            <div class="rounded-xl border border-yellow-400/20 bg-zinc-900/70 p-6 text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="mb-3 flex justify-center">
+                    <div class="rounded-full bg-yellow-400/20 p-3">
+                        <i class="fa-solid fa-map-pin text-2xl text-yellow-300"></i>
+                    </div>
+                </div>
+                <h3 class="title-font text-lg font-semibold text-zinc-100">Localisation Exacte</h3>
+                <p class="mt-2 text-sm text-zinc-400">
+                    Latitude: 3.786593°N<br>
+                    Longitude: 11.442157°E
+                </p>
+            </div>
+
+            <div class="rounded-xl border border-yellow-400/20 bg-zinc-900/70 p-6 text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="mb-3 flex justify-center">
+                    <div class="rounded-full bg-yellow-400/20 p-3">
+                        <i class="fa-solid fa-phone text-2xl text-yellow-300"></i>
+                    </div>
+                </div>
+                <h3 class="title-font text-lg font-semibold text-zinc-100">Nous Contacter</h3>
+                <p class="mt-2 text-sm text-zinc-400">
+                    {% if site_settings.phone_number %}
+                    <a href="tel:{{ site_settings.phone_number }}" class="hover:text-yellow-300">{{ site_settings.phone_number }}</a><br>
+                    {% endif %}
+                    {% if site_settings.site_email %}
+                    <a href="mailto:{{ site_settings.site_email }}" class="hover:text-yellow-300">{{ site_settings.site_email }}</a>
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="rounded-xl border border-yellow-400/20 bg-zinc-900/70 p-6 text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="mb-3 flex justify-center">
+                    <div class="rounded-full bg-yellow-400/20 p-3">
+                        <i class="fa-solid fa-location-dot text-2xl text-yellow-300"></i>
+                    </div>
+                </div>
+                <h3 class="title-font text-lg font-semibold text-zinc-100">Adresse</h3>
+                <p class="mt-2 text-sm text-zinc-400">
+                    {{ site_settings.address|default:'Non renseignée' }}
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock content %}
 
 {% block extra_scripts %}
 <script>
+    // ====== Carousel Slides ======
     const slides = document.querySelectorAll('.slide-item');
     let currentSlide = 0;
     if (slides.length > 1) {
@@ -181,5 +286,316 @@
         if (prevBtn) prevBtn.style.display = 'none';
         if (nextBtn) nextBtn.style.display = 'none';
     }
+    
+    // ====== Leaflet Map Initialization ======
+    function initMap() {
+        const mapElement = document.getElementById('map');
+        if (!mapElement || typeof L === 'undefined') {
+            console.warn('Leaflet not loaded, retrying in 1 second...');
+            setTimeout(initMap, 1000);
+            return;
+        }
+
+        try {
+            // Coordinates
+            const latitude = 3.786593;
+            const longitude = 11.442157;
+            const zoom = 15;
+
+            // Hide fallback overlay when the map is successfully initialized
+            const fallbackElement = document.getElementById('map-fallback');
+            if (fallbackElement) {
+                fallbackElement.style.display = 'none';
+            }
+
+            // Initialize map
+            const map = L.map('map').setView([latitude, longitude], zoom);
+
+            // Satellite Tile Layer (using Esri imagery)
+            const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; <a href="https://www.esri.com/">Esri</a> - Satellite imagery',
+                maxZoom: 20,
+                minZoom: 3,
+                opacity: 1
+            }).addTo(map);
+
+            // Add road and place reference overlay for labels and routes
+            const placeOverlay = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; Esri - Labels et lieux',
+                maxZoom: 20,
+                minZoom: 3,
+                opacity: 0.85
+            }).addTo(map);
+
+            const transportOverlay = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Transportation/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '&copy; Esri - Routes',
+                maxZoom: 20,
+                minZoom: 3,
+                opacity: 0.95
+            }).addTo(map);
+
+            L.control.layers({
+                'Satellite': satelliteLayer
+            }, {
+                'Labels & Quartiers': placeOverlay,
+                'Routes': transportOverlay
+            }, {
+                collapsed: false,
+                position: 'topright'
+            }).addTo(map);
+
+            // Add Scale Control
+            L.control.scale({
+                metric: true,
+                imperial: false,
+                position: 'bottomleft'
+            }).addTo(map);
+
+            // Add Zoom Control
+            L.control.zoom({
+                position: 'topright'
+            }).addTo(map);
+
+            // Custom marker with popup
+            const marker = L.marker([latitude, longitude], {
+                title: 'Notre Position',
+                zIndexOffset: 1000
+            }).addTo(map);
+
+            // Create custom icon
+            const customIcon = L.divIcon({
+                className: 'custom-marker',
+                html: `<div style="
+                    background: linear-gradient(135deg, #facc15, #eab308);
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border: 3px solid white;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    cursor: pointer;
+                    font-size: 20px;
+                    color: #0a0a0a;
+                    position: relative;
+                    animation: pulse 2s infinite;
+                ">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <style>
+                    @keyframes pulse {
+                        0%, 100% { transform: scale(1); }
+                        50% { transform: scale(1.1); }
+                    }
+                    .custom-marker {
+                        position: absolute;
+                        width: 40px;
+                        height: 40px;
+                        margin-left: -20px;
+                        margin-top: -40px;
+                    }
+                </style>`,
+                iconSize: [40, 40],
+                iconAnchor: [20, 40],
+                popupAnchor: [0, -40]
+            });
+
+            marker.setIcon(customIcon);
+
+            // Popup content
+            const popupContent = `
+                <div style="font-family: 'Rajdhani', sans-serif; width: 280px;">
+                    <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #facc15; font-weight: 700;">
+                        <i class="fa-solid fa-location-dot"></i> Position du Comidaf
+                    </h3>
+                    <p style="margin: 0 0 10px 0; color: #0a0a0a; font-size: 14px;">
+                        Coordonnées et zone d’implantation
+                    </p>
+                    <div style="background: #f5f5f5; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #0a0a0a;">
+                        <strong>Latitude:</strong> 3.786593°N<br>
+                        <strong>Longitude:</strong> 11.442157°E
+                    </div>
+                    <div style="background: #ffffff; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #0a0a0a; border: 1px solid #e5e7eb;">
+                        <strong>Ville:</strong> Douala<br>
+                        <strong>Quartier:</strong> Bonapriso<br>
+                        <strong>Carrefour:</strong> Carrefour Akwa
+                    </div>
+                    <p style="margin: 0; color: #0a0a0a; font-size: 13px; line-height: 1.4;">
+                        Vue satellite interactive - Cliquez pour zoomer
+                    </p>
+                </div>
+            `;
+
+            marker.bindPopup(popupContent, {
+                maxWidth: 300,
+                className: 'custom-popup'
+            });
+
+            // Open popup on load
+            marker.openPopup();
+
+            // Click marker to zoom in
+            marker.on('click', function() {
+                map.setView([latitude, longitude], 18); // Zoom closer
+            });
+
+            // Add custom styles for popup
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .custom-popup .leaflet-popup-content {
+                    background: linear-gradient(135deg, #facc15, #eab308) !important;
+                    border-radius: 12px !important;
+                    padding: 0 !important;
+                    margin: 0 !important;
+                    box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+                }
+                .custom-popup .leaflet-popup-content-wrapper {
+                    border-radius: 12px !important;
+                    box-shadow: none !important;
+                    padding: 0 !important;
+                }
+                .custom-popup .leaflet-popup-content {
+                    padding: 16px !important;
+                    margin: 0 !important;
+                }
+                .leaflet-container a.leaflet-popup-close-button {
+                    background: white !important;
+                    color: #facc15 !important;
+                    border-radius: 50% !important;
+                    width: 24px !important;
+                    height: 24px !important;
+                    font-size: 16px !important;
+                    top: 4px !important;
+                    right: 4px !important;
+                }
+                .leaflet-container a.leaflet-popup-close-button:hover {
+                    background: #eab308 !important;
+                }
+                .leaflet-popup-tip {
+                    border-top-color: #facc15 !important;
+                    background: #facc15 !important;
+                }
+                /* Attribution control styling */
+                .leaflet-control-attribution {
+                    background: rgba(0, 0, 0, 0.85) !important;
+                    color: #f5f5f5 !important;
+                    border-radius: 6px !important;
+                    border: 1px solid rgba(250, 204, 21, 0.3) !important;
+                }
+                .leaflet-control-attribution a {
+                    color: #facc15 !important;
+                }
+                /* Zoom control styling */
+                .leaflet-control-zoom {
+                    border-radius: 8px !important;
+                    overflow: hidden !important;
+                    border: 1px solid rgba(250, 204, 21, 0.3) !important;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+                }
+                .leaflet-control-zoom a {
+                    background: rgba(10, 10, 10, 0.9) !important;
+                    color: #facc15 !important;
+                    border-radius: 0 !important;
+                    border-bottom: 1px solid rgba(250, 204, 21, 0.2) !important;
+                }
+                .leaflet-control-zoom a:last-child {
+                    border-bottom: none !important;
+                }
+                .leaflet-control-zoom a:hover {
+                    background: #facc15 !important;
+                    color: #0a0a0a !important;
+                }
+                /* Scale control styling */
+                .leaflet-control-scale {
+                    border: 1px solid rgba(250, 204, 21, 0.3) !important;
+                    background: rgba(10, 10, 10, 0.9) !important;
+                    border-radius: 4px !important;
+                    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+                    color: #f5f5f5 !important;
+                }
+                .leaflet-control-scale-line {
+                    border: 1px solid #facc15 !important;
+                    border-top: 2px solid #facc15 !important;
+                    color: #facc15 !important;
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Add geolocation control
+            const geoInfo = document.createElement('div');
+            geoInfo.style.cssText = `
+                position: absolute;
+                bottom: 80px;
+                right: 10px;
+                background: linear-gradient(135deg, #facc15, #eab308);
+                color: #0a0a0a;
+                padding: 10px 12px;
+                border-radius: 8px;
+                font-size: 12px;
+                font-weight: 600;
+                z-index: 999;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            `;
+            geoInfo.innerHTML = '<i class="fa-solid fa-satellite"></i> Vue Satellite';
+            geoInfo.title = 'Mode imagerie satellite';
+            document.getElementById('map-container').appendChild(geoInfo);
+
+            // Responsive
+            window.addEventListener('resize', () => {
+                map.invalidateSize();
+            });
+
+            console.log('Leaflet map initialized successfully');
+        } catch (error) {
+            console.error('Error initializing Leaflet map:', error);
+            // Fallback: show error message
+            const mapElement = document.getElementById('map');
+            if (mapElement) {
+                mapElement.innerHTML = `
+                    <div style="
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100%;
+                        background: linear-gradient(135deg, #facc15, #eab308);
+                        color: #0a0a0a;
+                        font-family: 'Rajdhani', sans-serif;
+                        text-align: center;
+                        padding: 20px;
+                    ">
+                        <i class="fa-solid fa-map-pin" style="font-size: 48px; margin-bottom: 16px;"></i>
+                        <h3 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700;">Carte en cours de chargement</h3>
+                        <p style="margin: 0; font-size: 16px; line-height: 1.4;">
+                            Latitude: 3.786593°N<br>
+                            Longitude: 11.442157°E
+                        </p>
+                        <a href="#" onclick="location.reload(); return false;"
+                           style="
+                               margin-top: 16px;
+                               padding: 12px 24px;
+                               background: #0a0a0a;
+                               color: #facc15;
+                               text-decoration: none;
+                               border-radius: 8px;
+                               font-weight: 600;
+                               display: inline-block;
+                               transition: all 0.3s ease;
+                           "
+                           onmouseover="this.style.background='#facc15'; this.style.color='#0a0a0a';"
+                           onmouseout="this.style.background='#0a0a0a'; this.style.color='#facc15';">
+                            <i class="fa-solid fa-refresh"></i> Recharger la carte
+                        </a>
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Initialize map after a short delay to ensure Leaflet is loaded
+    setTimeout(initMap, 500);
 </script>
 {% endblock extra_scripts %}
