@@ -178,8 +178,8 @@
                     <div class="bg-zinc-800/50 rounded-lg p-4 mb-6 border border-yellow-400/20">
                         <p class="text-sm text-zinc-300 mb-2"><strong>Coordonnées GPS :</strong></p>
                         <p class="text-yellow-300 font-mono">
-                            Latitude: 3.786593°N<br>
-                            Longitude: 11.442157°E
+                            Latitude: 3.786883°N<br>
+                            Longitude: 11.445008°E
                         </p>
                     </div>
                     <a href="#" onclick="document.getElementById('map').scrollIntoView({behavior: 'smooth'}); return false;"
@@ -195,7 +195,7 @@
                         <p class="mb-1"><strong>Ville :</strong> Douala</p>
                         <p class="mb-1"><strong>Quartier :</strong> Bonapriso</p>
                         <p class="mb-1"><strong>Carrefour :</strong> Carrefour Akwa</p>
-                        <p class="mb-1"><strong>Coordonnées :</strong> 3.786593°N, 11.442157°E</p>
+                        <p class="mb-1"><strong>Coordonnées :</strong> 3.786883°N, 11.445008°E</p>
                         <p class="mb-1"><strong>Zoom initial :</strong> 15</p>
                         <p class="mb-1"><strong>Contrôles :</strong> Zoom, Échelle, Popup</p>
                         <p class="mb-0"><strong>Source :</strong> Esri / ArcGIS World Imagery + Références</p>
@@ -215,8 +215,8 @@
                 </div>
                 <h3 class="title-font text-lg font-semibold text-zinc-100">Localisation Exacte</h3>
                 <p class="mt-2 text-sm text-zinc-400">
-                    Latitude: 3.786593°N<br>
-                    Longitude: 11.442157°E
+                    Latitude: 3.786883°N<br>
+                    Longitude: 11.445008°E
                 </p>
             </div>
 
@@ -297,10 +297,10 @@
         }
 
         try {
-            // Coordinates
-            const latitude = 3.786593;
-            const longitude = 11.442157;
-            const zoom = 15;
+            // Coordinates (position ajustee sur la zone indiquee)
+            const latitude = 3.786883;
+            const longitude = 11.445008;
+            const zoom = 16;
 
             // Hide fallback overlay when the map is successfully initialized
             const fallbackElement = document.getElementById('map-fallback');
@@ -331,7 +331,7 @@
                 attribution: '&copy; Esri - Routes',
                 maxZoom: 20,
                 minZoom: 3,
-                opacity: 0.95
+                opacity: 1
             }).addTo(map);
 
             L.control.layers({
@@ -403,27 +403,12 @@
 
             marker.setIcon(customIcon);
 
-            // Popup content
+            // Popup content (texte unique demande)
             const popupContent = `
-                <div style="font-family: 'Rajdhani', sans-serif; width: 280px;">
-                    <h3 style="margin: 0 0 8px 0; font-size: 18px; color: #facc15; font-weight: 700;">
-                        <i class="fa-solid fa-location-dot"></i> Position du Comidaf
+                <div style="font-family: 'Rajdhani', sans-serif; width: 230px; text-align: center;">
+                    <h3 style="margin: 0; font-size: 18px; color: #0a0a0a; font-weight: 700;">
+                        Position Comidaf
                     </h3>
-                    <p style="margin: 0 0 10px 0; color: #0a0a0a; font-size: 14px;">
-                        Coordonnées et zone d’implantation
-                    </p>
-                    <div style="background: #f5f5f5; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #0a0a0a;">
-                        <strong>Latitude:</strong> 3.786593°N<br>
-                        <strong>Longitude:</strong> 11.442157°E
-                    </div>
-                    <div style="background: #ffffff; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 12px; color: #0a0a0a; border: 1px solid #e5e7eb;">
-                        <strong>Ville:</strong> Douala<br>
-                        <strong>Quartier:</strong> Bonapriso<br>
-                        <strong>Carrefour:</strong> Carrefour Akwa
-                    </div>
-                    <p style="margin: 0; color: #0a0a0a; font-size: 13px; line-height: 1.4;">
-                        Vue satellite interactive - Cliquez pour zoomer
-                    </p>
                 </div>
             `;
 
@@ -543,6 +528,30 @@
             geoInfo.title = 'Mode imagerie satellite';
             document.getElementById('map-container').appendChild(geoInfo);
 
+            // Panneau d'information routes/quartiers directement sur la carte
+            const routeInfo = document.createElement('div');
+            routeInfo.style.cssText = `
+                position: absolute;
+                top: 12px;
+                left: 12px;
+                background: rgba(0, 0, 0, 0.78);
+                color: #f5f5f5;
+                padding: 10px 12px;
+                border-radius: 10px;
+                font-size: 12px;
+                z-index: 999;
+                border: 1px solid rgba(250, 204, 21, 0.35);
+                box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+                line-height: 1.5;
+            `;
+            routeInfo.innerHTML = `
+                <strong style="color:#facc15;">Details carte</strong><br>
+                - Routes principales et secondaires: actives<br>
+                - Quartiers et lieux: actifs<br>
+                - Mode: satellite + references
+            `;
+            document.getElementById('map-container').appendChild(routeInfo);
+
             // Responsive
             window.addEventListener('resize', () => {
                 map.invalidateSize();
@@ -570,8 +579,8 @@
                         <i class="fa-solid fa-map-pin" style="font-size: 48px; margin-bottom: 16px;"></i>
                         <h3 style="margin: 0 0 8px 0; font-size: 24px; font-weight: 700;">Carte en cours de chargement</h3>
                         <p style="margin: 0; font-size: 16px; line-height: 1.4;">
-                            Latitude: 3.786593°N<br>
-                            Longitude: 11.442157°E
+                            Latitude: 3.786883°N<br>
+                            Longitude: 11.445008°E
                         </p>
                         <a href="#" onclick="location.reload(); return false;"
                            style="
