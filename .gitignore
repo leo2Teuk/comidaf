@@ -13,3 +13,4 @@ media
 /.vscode
 /.idea
 demo/settings.py
+db.sqlite3
