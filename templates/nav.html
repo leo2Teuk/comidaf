@@ -17,6 +17,7 @@
         <nav class="hidden items-center gap-6 md:flex">
             <a href="{% url 'core:home' %}" class="text-sm font-semibold text-zinc-100 hover:text-yellow-300">Accueil</a>
             <a href="{% url 'core:shop' %}" class="text-sm font-semibold text-zinc-100 hover:text-yellow-300">Catalogue</a>
+            <a href="#infos" class="text-sm font-semibold text-zinc-100 hover:text-yellow-300">Infos</a>
             {% for category in top_categories|slice:':4' %}
             <a href="{% url 'core:category' category.slug %}" class="text-sm font-semibold text-zinc-100 hover:text-yellow-300">{{ category.title }}</a>
             {% endfor %}
@@ -55,6 +56,7 @@
         <nav class="flex flex-col gap-3">
             <a href="{% url 'core:home' %}" class="rounded-lg px-3 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800">Accueil</a>
             <a href="{% url 'core:shop' %}" class="rounded-lg px-3 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800">Catalogue</a>
+            <a href="#infos" class="rounded-lg px-3 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800">Infos</a>
             {% for category in top_categories|slice:':6' %}
             <a href="{% url 'core:category' category.slug %}" class="rounded-lg px-3 py-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800">{{ category.title }}</a>
             {% endfor %}

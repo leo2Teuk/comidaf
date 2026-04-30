@@ -12,7 +12,7 @@
             <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-transparent"></div>
             <div class="absolute left-6 top-1/2 max-w-xl -translate-y-1/2 sm:left-14">
                 <h2 class="title-font text-3xl font-extrabold text-white sm:text-5xl">{{ img.title|default:'Materiel electrique professionnel' }}</h2>
-                <p class="mt-3 text-sm text-zinc-200 sm:text-base">{{ img.description|default:'Qualite, disponibilite et livraison rapide pour vos chantiers.' }}</p>
+                <p class="mt-3 text-sm text-yellow-300 sm:text-base">{{ img.description|default:'Qualite, disponibilite et livraison rapide pour vos chantiers.' }}</p>
             </div>
         </a>
         {% endfor %}
@@ -59,7 +59,7 @@
                         <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-transparent"></div>
                         <div class="absolute bottom-0 left-0 p-8">
                             <h2 class="title-font text-3xl font-bold text-yellow-300">{{ slide.caption1 }}</h2>
-                            <p class="mt-2 text-zinc-200">{{ slide.caption2 }}</p>
+                            <p class="mt-2 text-black">{{ slide.caption2 }}</p>
                         </div>
                     </a>
                     {% endfor %}
@@ -69,6 +69,71 @@
                     Ajoutez des slides depuis Dashboard > Carousel.
                 </div>
                 {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="infos" class="relative overflow-hidden border-b border-yellow-400/20 bg-gradient-to-b from-zinc-950 via-zinc-900 to-zinc-950">
+    <div class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div class="grid gap-12 lg:grid-cols-2 lg:items-start">
+            <div data-aos="fade-up">
+                <p class="mb-3 inline-flex items-center rounded-full border border-yellow-400/40 bg-yellow-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-yellow-300">
+                    Infos Comidaf
+                </p>
+                <h2 class="title-font text-3xl font-bold text-zinc-100 sm:text-4xl">Complexe multi industriel d’Afrique</h2>
+                <p class="mt-6 text-zinc-400 leading-relaxed">
+                    COMIDAF est un complexe industriel spécialisé dans l’exploitation des matières plastiques pour la production de gaines électriques et conduits techniques.
+                    Notre mission est de fournir des solutions durables, résistantes et adaptées aux chantiers électriques lourds en Afrique centrale.
+                </p>
+                <div class="mt-8 space-y-4 rounded-3xl border border-yellow-400/20 bg-zinc-900/80 p-8 shadow-2xl">
+                    <div>
+                        <h3 class="text-lg font-semibold text-zinc-100">Localisation détaillée</h3>
+                        <p class="mt-2 text-zinc-400">Nomayos, Centre-Cameroun</p>
+                        <p class="mt-1 text-zinc-400">Proche des axes routiers principaux, installation industrielle stratégique pour la logistique et la distribution.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-zinc-100">Spécialisation</h3>
+                        <p class="mt-2 text-zinc-400">Transformation des matières plastiques en gaines électriques, conduits, et solutions de protection pour le secteur du bâtiment et de l’industrie.</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-zinc-100">Engagements</h3>
+                        <ul class="mt-2 list-disc space-y-2 pl-5 text-zinc-400">
+                            <li>Qualité industrielle certifiée</li>
+                            <li>Conception de gaines résistantes aux conditions tropicales</li>
+                            <li>Livraison rapide vers les chantiers et la région centre</li>
+                            <li>Innovation dans le recyclage des plastiques et l’industrie verte</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div data-aos="fade-left" class="space-y-6">
+                <div class="overflow-hidden rounded-[32px] border border-yellow-400/20 bg-zinc-900/70 p-8 shadow-2xl">
+                    <h3 class="title-font text-2xl font-bold text-zinc-100">Définition du Comidaf</h3>
+                    <p class="mt-4 text-zinc-400 leading-relaxed">Le Comidaf, ou Complexe multi industriel d’Afrique, valorise les matières plastiques pour produire des gaines électriques haute performance. Il assure la transformation, la protection et la distribution de solutions électriques robustes pour les usages résidentiels, commerciaux et industriels.</p>
+                </div>
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="rounded-3xl border border-yellow-400/20 bg-zinc-900/70 p-6 text-center">
+                        <p class="text-sm uppercase tracking-[0.3em] text-yellow-300">Site principal</p>
+                        <p class="mt-4 text-xl font-semibold text-zinc-100">Nomayos</p>
+                        <p class="mt-2 text-zinc-400">Centre-Cameroun</p>
+                    </div>
+                    <div class="rounded-3xl border border-yellow-400/20 bg-zinc-900/70 p-6 text-center">
+                        <p class="text-sm uppercase tracking-[0.3em] text-yellow-300">Réseau</p>
+                        <p class="mt-4 text-xl font-semibold text-zinc-100">Matières plastiques</p>
+                        <p class="mt-2 text-zinc-400">Gaines électriques et conduits industriels</p>
+                    </div>
+                </div>
+                <div class="rounded-3xl border border-yellow-400/20 bg-zinc-900/70 p-6">
+                    <h3 class="text-lg font-semibold text-zinc-100">Autres informations importantes</h3>
+                    <ul class="mt-4 list-disc space-y-3 pl-5 text-zinc-400">
+                        <li>Production adaptée aux normes locales et internationales</li>
+                        <li>Approvisionnement en matières premières recyclées</li>
+                        <li>Garantie de robustesse thermique et chimique</li>
+                        <li>Soutien à l’économie industrielle camerounaise</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -156,7 +221,7 @@
                 <i class="fa-solid fa-map-pin mr-2"></i> Localisation
             </p>
             <h2 class="title-font mx-auto max-w-2xl text-3xl font-bold text-zinc-100 sm:text-4xl">
-                Retrouvez-nous à {{ site_settings.address|default:'Douala, Cameroun' }}
+                Retrouvez-nous à {{ site_settings.address|default:'Nomayos, Centre-Cameroun' }}
             </h2>
             <p class="mt-4 max-w-xl text-zinc-400">
                 Découvrez l'emplacement de nos installations et visitez-nous pour vos besoins en matériel électrique professionnel. Nous sommes situés à une position stratégique pour servir toute la région.
