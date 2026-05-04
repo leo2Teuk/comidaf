@@ -118,6 +118,23 @@ class Item(models.Model):
             'slug': self.slug
         })
 
+    def get_display_price(self):
+        """Prix principal affiche: toujours le plus bas."""
+        if self.discount_price is None:
+            return self.price
+        return min(self.price, self.discount_price)
+
+    def get_original_price(self):
+        """Prix barre affiche: le plus eleve si deux prix differents existent."""
+        if self.discount_price is None:
+            return None
+        if self.discount_price == self.price:
+            return None
+        return max(self.price, self.discount_price)
+
+    def has_price_difference(self):
+        return self.get_original_price() is not None
+
 
 class OrderItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -133,15 +150,16 @@ class OrderItem(models.Model):
         return self.quantity * self.item.price
 
     def get_total_discount_item_price(self):
-        return self.quantity * self.item.discount_price
+        return self.quantity * self.item.get_display_price()
 
     def get_amount_saved(self):
-        return self.get_total_item_price() - self.get_total_discount_item_price()
+        original_price = self.item.get_original_price()
+        if original_price is None:
+            return 0
+        return (self.quantity * original_price) - self.get_total_discount_item_price()
 
     def get_final_price(self):
-        if self.item.discount_price:
-            return self.get_total_discount_item_price()
-        return self.get_total_item_price()
+        return self.quantity * self.item.get_display_price()
 
 
 class Order(models.Model):

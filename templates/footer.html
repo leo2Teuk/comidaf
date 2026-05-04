@@ -51,7 +51,7 @@
             <div>
                 <div class="mb-4 flex items-center gap-3">
                     {% if site_settings.logo %}
-                    <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-16 w-16 rounded-full border-2 border-yellow-400 object-cover">
+                    <img src="{{ site_settings.logo.url }}" alt="{{ site_settings.site_name }}" class="h-16 w-auto max-w-[260px] rounded border border-yellow-400 bg-white px-1 object-contain">
                     {% else %}
                     <div class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-yellow-400 bg-white text-2xl text-black"><i class="fa-solid fa-bolt"></i></div>
                     {% endif %}

@@ -70,9 +70,9 @@
                             </td>
                             <td>{{ item.category.title }}</td>
                             <td>
-                                <strong>FCFA {{ item.price }}</strong>
-                                {% if item.discount_price %}
-                                <br><small class="text-danger" style="text-decoration: line-through;">FCFA {{ item.discount_price }}</small>
+                                <strong>FCFA {{ item.get_display_price }}</strong>
+                                {% if item.has_price_difference %}
+                                <br><small class="text-danger" style="text-decoration: line-through;">FCFA {{ item.get_original_price }}</small>
                                 {% endif %}
                             </td>
                             <td>

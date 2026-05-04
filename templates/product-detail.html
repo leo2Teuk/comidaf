@@ -24,12 +24,10 @@
 
             <div class="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-5">
                 <div class="flex items-end gap-3">
-                    {% if object.discount_price %}
-                    <p class="text-sm text-zinc-400 line-through">{{ site_settings.currency|default:'FCFA' }} {{ object.price }}</p>
-                    <p class="text-3xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ object.discount_price }}</p>
-                    {% else %}
-                    <p class="text-3xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ object.price }}</p>
+                    {% if object.has_price_difference %}
+                    <p class="text-sm text-zinc-400 line-through">{{ site_settings.currency|default:'FCFA' }} {{ object.get_original_price }}</p>
                     {% endif %}
+                    <p class="text-3xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ object.get_display_price }}</p>
                 </div>
                 <div class="mt-5 flex flex-wrap gap-3">
                     <a href="{{ object.get_add_to_cart_url }}" class="btn-main rounded-xl bg-yellow-400 px-5 py-3 text-sm font-bold text-black">Ajouter au panier</a>
@@ -69,7 +67,12 @@
                 </a>
                 <div class="p-4">
                     <a href="{{ item.get_absolute_url }}" class="title-font text-xl font-bold text-zinc-100 hover:text-yellow-300">{{ item.title }}</a>
-                    <p class="mt-2 text-sm font-semibold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ item.discount_price|default:item.price }}</p>
+                    <div class="mt-2">
+                        {% if item.has_price_difference %}
+                        <p class="text-xs text-zinc-400 line-through">{{ site_settings.currency|default:'FCFA' }} {{ item.get_original_price }}</p>
+                        {% endif %}
+                        <p class="text-sm font-semibold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ item.get_display_price }}</p>
+                    </div>
                 </div>
             </article>
             {% endfor %}

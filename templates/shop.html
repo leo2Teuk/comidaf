@@ -39,12 +39,10 @@
                 <p class="mt-2 line-clamp-2 text-sm text-zinc-400">{{ item.description_short|default:item.description_long|truncatechars:90 }}</p>
                 <div class="mt-4 flex items-center justify-between">
                     <div>
-                        {% if item.discount_price %}
-                        <p class="text-xs text-zinc-400 line-through">{{ site_settings.currency|default:'FCFA' }} {{ item.price }}</p>
-                        <p class="text-lg font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ item.discount_price }}</p>
-                        {% else %}
-                        <p class="text-lg font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ item.price }}</p>
+                        {% if item.has_price_difference %}
+                        <p class="text-xs text-zinc-400 line-through">{{ site_settings.currency|default:'FCFA' }} {{ item.get_original_price }}</p>
                         {% endif %}
+                        <p class="text-lg font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ item.get_display_price }}</p>
                     </div>
                     <a href="{{ item.get_add_to_cart_url }}" class="btn-main rounded-lg bg-yellow-400 px-3 py-2 text-xs font-bold text-black">Ajouter</a>
                 </div>

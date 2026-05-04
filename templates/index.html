@@ -196,13 +196,12 @@
                 <p class="mb-2 text-xs uppercase tracking-wider text-yellow-300">{{ item.category.title }}</p>
                 <a href="{{ item.get_absolute_url }}" class="title-font text-xl font-bold text-zinc-100 hover:text-yellow-300">{{ item.title }}</a>
                 <div class="mt-3 flex items-center justify-between">
-                    <p class="text-lg font-bold text-yellow-300">
-                        {% if item.discount_price %}
-                        {{ site_settings.currency|default:'USD' }} {{ item.discount_price }}
-                        {% else %}
-                        {{ site_settings.currency|default:'USD' }} {{ item.price }}
+                    <div>
+                        {% if item.has_price_difference %}
+                        <p class="text-xs text-zinc-400 line-through">{{ site_settings.currency|default:'USD' }} {{ item.get_original_price }}</p>
                         {% endif %}
-                    </p>
+                        <p class="text-lg font-bold text-yellow-300">{{ site_settings.currency|default:'USD' }} {{ item.get_display_price }}</p>
+                    </div>
                     <a href="{{ item.get_add_to_cart_url }}" class="btn-main rounded-lg bg-yellow-400 px-3 py-2 text-xs font-bold text-black">Ajouter</a>
                 </div>
             </div>

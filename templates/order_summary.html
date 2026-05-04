@@ -30,12 +30,10 @@
                                 <p class="mt-1 text-sm text-zinc-400">Reference: {{ order_item.item.stock_no }}</p>
                             </div>
                             <div class="text-left sm:text-right">
-                                {% if order_item.item.discount_price %}
-                                <p class="text-sm text-zinc-500 line-through">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.price }}</p>
-                                <p class="text-xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.discount_price }}</p>
-                                {% else %}
-                                <p class="text-xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.price }}</p>
+                                {% if order_item.item.has_price_difference %}
+                                <p class="text-sm text-zinc-500 line-through">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.get_original_price }}</p>
                                 {% endif %}
+                                <p class="text-xl font-bold text-yellow-300">{{ site_settings.currency|default:'FCFA' }} {{ order_item.item.get_display_price }}</p>
                             </div>
                         </div>
 
